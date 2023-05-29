@@ -81,6 +81,9 @@ class SendMessage extends StatelessWidget {
                         await showDialog(
                             context: context,
                             builder: (context) => SimpleDialog(
+                                  shape: const ContinuousRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(35))),
                                   insetPadding: EdgeInsets.only(
                                       top: heightMedia * .7,
                                       left: widthMedia * .3),

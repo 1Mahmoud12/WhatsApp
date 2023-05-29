@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../utils/general_functions.dart';
@@ -16,7 +15,7 @@ class Player extends StatefulWidget {
   State<Player> createState() => _PlayerState();
 }
 
-class _PlayerState extends State<Player> {
+class _PlayerState extends State<Player> with SingleTickerProviderStateMixin {
   final assetsAudioPlayer = AssetsAudioPlayer();
 
   Duration position = Duration.zero;
@@ -49,14 +48,18 @@ class _PlayerState extends State<Player> {
     assetsAudioPlayer.open(
       Audio.file(widget.filePath),
       autoStart: false,
-      showNotification: true,
+      showNotification: false,
     );
   }
 
+  late AnimationController controllerPlayer;
   @override
   void initState() {
     super.initState();
+    controllerPlayer = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 500));
     initRecorder();
+
     assetsAudioPlayer.onReadyToPlay.listen((event) {
       if (event != null) {
         fullAudio = event.duration;
@@ -68,6 +71,9 @@ class _PlayerState extends State<Player> {
       setState(() {
         position = event;
       });
+      if (fullAudio.inSeconds == event.inSeconds) {
+        controllerPlayer.reverse();
+      }
     });
   }
 
@@ -90,7 +96,7 @@ class _PlayerState extends State<Player> {
                 formatTime(fullAudio),
                 style: TextStyle(
                     fontSize: widthMedia * .04,
-                    color: Colors.black,
+                    color: Colors.white70,
                     fontWeight: FontWeight.bold),
               ),
             ),
@@ -110,32 +116,28 @@ class _PlayerState extends State<Player> {
                     setState(() {});
                   },
                 )),
-            Padding(
-              padding: const EdgeInsets.only(right: 16.0, bottom: 16),
-              child: IconButton(
-                  onPressed: () async {
-                    if (audioPlaying) {
-                      await assetsAudioPlayer.pause();
-                      audioPlaying = false;
-                    } else {
-                      await playRecorder();
-                      audioPlaying = true;
-                    }
-                    setState(() {});
-                  },
-                  icon: audioPlaying
-                      ? const FaIcon(
-                          FontAwesomeIcons.stop,
-                          color: Colors.white,
-                        )
-                      : const FaIcon(
-                          FontAwesomeIcons.circlePlay,
-                          color: Colors.white,
-                        )),
-            )
+            IconButton(
+                onPressed: () async {
+                  if (audioPlaying) {
+                    controllerPlayer.reverse();
+                    audioPlaying = false;
+                    await assetsAudioPlayer.pause();
+                  } else {
+                    audioPlaying = true;
+                    controllerPlayer.forward();
+                    await playRecorder();
+                  }
+                  setState(() {});
+                },
+                icon: AnimatedIcon(
+                  color: Colors.white70,
+                  icon: AnimatedIcons.play_pause,
+                  progress: controllerPlayer,
+                ))
           ],
         ),
       ),
     );
   }
 }
+/* */
