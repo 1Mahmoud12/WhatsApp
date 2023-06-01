@@ -88,52 +88,61 @@ class _PlayerState extends State<Player> with SingleTickerProviderStateMixin {
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Row(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(
-                left: 16,
-              ),
-              child: Text(
-                formatTime(fullAudio),
-                style: TextStyle(
-                    fontSize: widthMedia * .04,
-                    color: Colors.white70,
-                    fontWeight: FontWeight.bold),
+            Expanded(
+              flex: 2,
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  left: 16,
+                ),
+                child: Text(
+                  formatTime(fullAudio),
+                  style: TextStyle(
+                      fontSize: widthMedia * .04,
+                      color: Colors.white70,
+                      fontWeight: FontWeight.bold),
+                ),
               ),
             ),
-            SliderTheme(
-                data: const SliderThemeData(
-                    thumbShape: RoundSliderThumbShape(enabledThumbRadius: 7),
-                    secondaryActiveTrackColor: Colors.black),
-                child: Slider(
-                  activeColor: Colors.grey,
-                  inactiveColor: Colors.white70,
-                  thumbColor: Colors.blueGrey,
-                  min: 0,
-                  max: fullAudio.inSeconds.toDouble(),
-                  value: position.inSeconds.toDouble(),
-                  onChanged: (double value) {
-                    value = position.inSeconds.toDouble();
+            Expanded(
+              flex: 7,
+              child: SliderTheme(
+                  data: const SliderThemeData(
+                      thumbShape: RoundSliderThumbShape(enabledThumbRadius: 7),
+                      secondaryActiveTrackColor: Colors.black),
+                  child: Slider(
+                    activeColor: Colors.grey,
+                    inactiveColor: Colors.white70,
+                    thumbColor: Colors.blueGrey,
+                    min: 0,
+                    max: fullAudio.inSeconds.toDouble(),
+                    value: position.inSeconds.toDouble(),
+                    onChanged: (double value) {
+                      value = position.inSeconds.toDouble();
+                      setState(() {});
+                    },
+                  )),
+            ),
+            Expanded(
+              flex: 2,
+              child: IconButton(
+                  onPressed: () async {
+                    if (audioPlaying) {
+                      controllerPlayer.reverse();
+                      audioPlaying = false;
+                      await assetsAudioPlayer.pause();
+                    } else {
+                      audioPlaying = true;
+                      controllerPlayer.forward();
+                      await playRecorder();
+                    }
                     setState(() {});
                   },
-                )),
-            IconButton(
-                onPressed: () async {
-                  if (audioPlaying) {
-                    controllerPlayer.reverse();
-                    audioPlaying = false;
-                    await assetsAudioPlayer.pause();
-                  } else {
-                    audioPlaying = true;
-                    controllerPlayer.forward();
-                    await playRecorder();
-                  }
-                  setState(() {});
-                },
-                icon: AnimatedIcon(
-                  color: Colors.white70,
-                  icon: AnimatedIcons.play_pause,
-                  progress: controllerPlayer,
-                ))
+                  icon: AnimatedIcon(
+                    color: Colors.white70,
+                    icon: AnimatedIcons.play_pause,
+                    progress: controllerPlayer,
+                  )),
+            )
           ],
         ),
       ),

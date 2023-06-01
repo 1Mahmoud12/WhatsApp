@@ -20,8 +20,8 @@ class CameraPage extends StatefulWidget {
   final String? receiveId;
   final String? text;
 
-
-  const CameraPage({Key? key,required this.cameras,this.receiveId,this.text}) : super(key: key);
+  const CameraPage({Key? key, required this.cameras, this.receiveId, this.text})
+      : super(key: key);
 
   @override
   State<CameraPage> createState() => _CameraPageState();
@@ -50,17 +50,15 @@ class _CameraPageState extends State<CameraPage> {
     }
   }
 
-
   @override
   void initState() {
     super.initState();
     // initialize the rear camera
-    initCamera(widget.cameras![0] );
+    initCamera(widget.cameras![0]);
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
         body: SafeArea(
       child: Stack(
@@ -76,32 +74,31 @@ class _CameraPageState extends State<CameraPage> {
               Padding(
                 padding: const EdgeInsets.only(left: 21.0),
                 child: InkWell(
-                  onTap: ()async{
-                    final XFile? imagePicker = await _picker.pickImage(source: ImageSource.gallery);
-                    if(widget.receiveId!=null){
+                  onTap: () async {
+                    final XFile? imagePicker =
+                        await _picker.pickImage(source: ImageSource.gallery);
+                    if (widget.receiveId != null) {
                       FirebaseStorage.instance
                           .ref()
-                          .child('users/${Uri.file(imagePicker!.path).pathSegments.last}')
+                          .child(
+                              'users/${Uri.file(imagePicker!.path).pathSegments.last}')
                           .putFile(File(imagePicker.path))
                           .then((p0) {
                         p0.ref.getDownloadURL().then((value) {
-                          if(value !='') {
+                          if (value != '') {
                             ChatCubit.get(context).addMessage(Message({
-                            'sendId':Constants.idForMe,
-                            'receiveId':widget.receiveId,
-                            'text':widget.text??'',
-                            "image":value,
-                            'dateTime':DateTime.now().toString(),
-                            'createdAt':DateTime.now(),
-                          }).toMap());
+                              'sendId': Constants.idForMe,
+                              'receiveId': widget.receiveId,
+                              'text': widget.text ?? '',
+                              "image": value,
+                              'dateTime': DateTime.now().toString(),
+                              'createdAt': DateTime.now(),
+                            }).toMap());
                           }
-
                         });
                       });
                     }
-
-
-                    },
+                  },
                   child: Image.asset(
                     'assets/sanFrancesco.png',
                     width: 48,
@@ -125,11 +122,10 @@ class _CameraPageState extends State<CameraPage> {
                   'assets/icons8-switch.png',
                   color: Colors.white,
                 ),
-                onPressed: () async{
+                onPressed: () async {
                   setState(
                       () => _isRearCameraSelected = !_isRearCameraSelected);
-                  initCamera(widget.cameras! [ _isRearCameraSelected ? 0 : 1]);
-
+                  initCamera(widget.cameras![_isRearCameraSelected ? 0 : 1]);
                 },
               )),
             ]),
@@ -141,7 +137,7 @@ class _CameraPageState extends State<CameraPage> {
                 IconButton(
                   onPressed: () {
                     ChatCubit.get(context).changeIndex(2);
-                   navigatorReuse(context, const MainPage());
+                    navigatorReuse(context, const MainPage());
                     //context.push( '/chat');
                   },
                   icon: const Icon(
@@ -169,7 +165,8 @@ class _CameraPageState extends State<CameraPage> {
                             padding: const EdgeInsets.all(5.0),
                             child: Text(
                               flashString[flashCount == -1 ? 01 : flashCount],
-                              style: AppStyles.style16.copyWith(color: Colors.white),
+                              style: AppStyles.style16
+                                  .copyWith(color: Colors.white),
                             ),
                           ))),
                 )
@@ -191,24 +188,23 @@ class _CameraPageState extends State<CameraPage> {
     try {
       //await _cameraController.setFlashMode(FlashMode.off);
       XFile imagePicker = await _cameraController.takePicture();
-      if(widget.receiveId!=null){
+      if (widget.receiveId != null) {
         FirebaseStorage.instance
             .ref()
             .child('users/${Uri.file(imagePicker.path).pathSegments.last}')
             .putFile(File(imagePicker.path))
             .then((p0) {
           p0.ref.getDownloadURL().then((value) {
-            if(value !='') {
+            if (value != '') {
               ChatCubit.get(context).addMessage(Message({
-              'sendId':Constants.idForMe,
-              'receiveId':widget.receiveId,
-              'text':widget.text??'',
-              "image":value,
-              'dateTime':DateTime.now().toString(),
-              'createdAt':DateTime.now(),
-            }).toMap());
+                'sendId': Constants.idForMe,
+                'receiveId': widget.receiveId,
+                'text': widget.text ?? '',
+                "image": value,
+                'dateTime': DateTime.now().toString(),
+                'createdAt': DateTime.now(),
+              }).toMap());
             }
-
           });
         });
       }
@@ -217,8 +213,9 @@ class _CameraPageState extends State<CameraPage> {
           context,
           MaterialPageRoute(
               builder: (context) => PreviewPage(
+                    haveUser: widget.receiveId,
                     picture: imagePicker,
-                cameraPage: true,
+                    cameraPage: true,
                   )));
     } on CameraException catch (e) {
       debugPrint('Error occured while taking picture: $e');

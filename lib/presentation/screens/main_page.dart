@@ -4,6 +4,7 @@ import 'package:camera/camera.dart';
 import 'package:chat_first/presentation/cubit/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:ionicons/ionicons.dart';
 
 import '../../core/camera_page.dart';
@@ -24,7 +25,7 @@ class MainPage extends StatelessWidget {
       const BottomNavigationBarItem(
           label: 'message', icon: Icon(Ionicons.chatbox_outline)),
       const BottomNavigationBarItem(
-          label: 'people', icon: Icon(Icons.people_alt_outlined)),
+          label: 'people', icon: FaIcon(FontAwesomeIcons.circleUser)),
     ];
 
     return BlocBuilder<ChatCubit, ChatState>(

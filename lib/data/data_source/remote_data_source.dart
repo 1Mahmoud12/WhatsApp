@@ -5,111 +5,107 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../domain/entities/model_message.dart';
 
-abstract class ChatRemoteDatsSourceRepository{
-  void addUserRemoteDataSource(Map<String,dynamic>json);
+abstract class ChatRemoteDatsSourceRepository {
+  void addUserRemoteDataSource(Map<String, dynamic> json);
   Future<List<Users>> getUserRemoteDataSource();
-  Future createMessageChatsRemoteDataSource(Map<String,dynamic>json) ;
+  Future createMessageChatsRemoteDataSource(Map<String, dynamic> json);
   Future<List<Message>> getChatsRemoteDataSource(String receiveId);
   Future<Message> lastMessageRemoteDataSource(String receiveId);
-  }
+}
 
-class ChatRemoteDatsSource extends ChatRemoteDatsSourceRepository{
-  final fireStoreUsers=   FirebaseFirestore.instance.collection('users');
+class ChatRemoteDatsSource extends ChatRemoteDatsSourceRepository {
+  final fireStoreUsers = FirebaseFirestore.instance.collection('users');
   @override
-  Future<void> addUserRemoteDataSource(Map<String,dynamic>json) async {
-    if(Constants.idForMe==null) {
-      print(json['di']);
+  Future<void> addUserRemoteDataSource(Map<String, dynamic> json) async {
+    if (Constants.idForMe == null) {
       await fireStoreUsers.doc(json['id']).set(json).then((value) {
         SharedPreference.putDataString('id', json['id']);
       });
-    }else{
+    } else {
       //print(json);
-      await  FirebaseFirestore.instance.collection('users').doc(Constants.idForMe).update(json);
-
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(Constants.idForMe)
+          .update(json);
     }
-
   }
-  static int lengthUsers=0;
-  static List<Users> users=[];
-  @override
-  Future<List<Users>> getUserRemoteDataSource() async{
 
-    await FirebaseFirestore.instance.collection('users').get().then((value)  {
-      users=[];
+  static int lengthUsers = 0;
+  static List<Users> users = [];
+  @override
+  Future<List<Users>> getUserRemoteDataSource() async {
+    await FirebaseFirestore.instance.collection('users').get().then((value) {
+      users = [];
 
       for (var element in value.docs) {
-        if(element.id!=Constants.idForMe) {
-
+        if (element.id != Constants.idForMe) {
           users.add(Users.fromJson(element.data()));
-          print(element.data()['lastSeen']);
-
-        }else{
-          Constants.usersForMe=Users.fromJson(element.data());
+        } else {
+          Constants.usersForMe = Users.fromJson(element.data());
+          print(" SSSSSSSSSSSSSSSSSSs :: ${Constants.usersForMe}");
         }
-
       }
-      lengthUsers=value.docs.length;
+      lengthUsers = value.docs.length;
     });
 
-          return users;
-
+    return users;
   }
 
   @override
-  Future createMessageChatsRemoteDataSource(Map<String,dynamic>json) async{
-
-    await FirebaseFirestore.instance.collection('users').doc(json['sendId']).collection('chats').doc(json['receiveId'])
-        .collection('messages').add(json);
-    await FirebaseFirestore.instance.collection('users').doc(json['receiveId']).collection('chats').doc(json['sendId'])
-        .collection('messages').add(json);
+  Future createMessageChatsRemoteDataSource(Map<String, dynamic> json) async {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(json['sendId'])
+        .collection('chats')
+        .doc(json['receiveId'])
+        .collection('messages')
+        .add(json);
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(json['receiveId'])
+        .collection('chats')
+        .doc(json['sendId'])
+        .collection('messages')
+        .add(json);
     //getChatsRemoteDataSource(json['receiveId']);
-
   }
 
   @override
   Future<List<Message>> getChatsRemoteDataSource(String receiveId) async {
-
-   await FirebaseFirestore.instance
+    await FirebaseFirestore.instance
         .collection('users')
         .doc(Constants.idForMe)
         .collection('chats')
         .doc(receiveId)
         .collection('messages')
         .orderBy('dataTime')
-        .snapshots().listen((event) {
-     Constants.modelOfChats=[];
-     event.docs.forEach((element) {
+        .snapshots()
+        .listen((event) {
+      Constants.modelOfChats = [];
+      event.docs.forEach((element) {
+        Constants.modelOfChats.add(Message(element.data()));
+        print(element.data());
+      });
+    });
 
-       Constants.modelOfChats.add(Message(element.data()));
-       print(element.data());
-
-     });
-
-   });
-
-
-
-
-
-   /* print(model);*/
-      return await Constants.modelOfChats;
-
-
+    /* print(model);*/
+    return await Constants.modelOfChats;
   }
 
   static Message? lastMessage;
 
   @override
-  Future<Message> lastMessageRemoteDataSource(String receiveId) async{
-
-   await FirebaseFirestore.instance
+  Future<Message> lastMessageRemoteDataSource(String receiveId) async {
+    await FirebaseFirestore.instance
         .collection('users')
         .doc(Constants.idForMe)
         .collection(Constants.collectionChats)
         .doc(receiveId)
         .collection(Constants.collectionMessages)
-        .orderBy('createdAt').get().then((value) {
-      lastMessage= Message(value.docs.last.data());
+        .orderBy('createdAt')
+        .get()
+        .then((value) {
+      lastMessage = Message(value.docs.last.data());
     });
 
     return lastMessage!;
