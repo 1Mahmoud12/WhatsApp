@@ -38,8 +38,11 @@ class Profile extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () async {
+              FirebaseAuth.instance.app.delete();
               FirebaseAuth.instance.signOut();
+
               await SharedPreference.putDataString('id', '');
+
               context.push("/Sign");
             },
             child: const Icon(Icons.exit_to_app_outlined),
