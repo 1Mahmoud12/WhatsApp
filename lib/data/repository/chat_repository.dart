@@ -4,38 +4,35 @@ import 'package:chat_first/domain/entities/model_user.dart';
 import '../../domain/entities/model_message.dart';
 import '../../domain/repository/chat_repository.dart';
 
-class ChatRepository implements ChatRepositoryDomain
-{
+class ChatRepository implements ChatRepositoryDomain {
   final ChatRemoteDatsSourceRepository chatRemoteDatsSourceRepository;
 
   ChatRepository(this.chatRemoteDatsSourceRepository);
 
   @override
-  void  addUsersDomain(Map<String, dynamic> json) {
+  void addUsersDomain(Map<String, dynamic> json) {
     chatRemoteDatsSourceRepository.addUserRemoteDataSource(json);
   }
 
   @override
-  Future<List<Users>> getUsers() async{
-    return  await chatRemoteDatsSourceRepository.getUserRemoteDataSource();
-
+  Future<List<Users>> getUsers() async {
+    return await chatRemoteDatsSourceRepository.getUserRemoteDataSource();
   }
 
   @override
-  Future createMessage(Map<String,dynamic>json) async{
-     chatRemoteDatsSourceRepository.createMessageChatsRemoteDataSource(json);
-
+  Future createMessage(Map<String, dynamic> json) async {
+    chatRemoteDatsSourceRepository.createMessageChatsRemoteDataSource(json);
   }
+
   @override
   Future<List<Message>> getChats(String receiveId) async {
-  return await chatRemoteDatsSourceRepository.getChatsRemoteDataSource(receiveId);
-
+    return await chatRemoteDatsSourceRepository
+        .getChatsRemoteDataSource(receiveId);
   }
 
   @override
   Future<Message> lastMessage(String receiveId) async {
-    return await chatRemoteDatsSourceRepository.lastMessageRemoteDataSource(receiveId);
-
+    return await chatRemoteDatsSourceRepository
+        .lastMessageRemoteDataSource(receiveId);
   }
-
 }

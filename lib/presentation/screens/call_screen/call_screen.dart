@@ -1,4 +1,3 @@
-
 /*
 import 'package:flutter/material.dart';
 
@@ -39,8 +38,6 @@ import 'package:chat_first/core/utils/constants.dart';
 import 'package:chat_first/presentation/screens/call_screen/items_call_widget.dart';
 import 'package:flutter/material.dart';
 
-
-
 class VideoSDKQuickStart extends StatefulWidget {
   const VideoSDKQuickStart({Key? key}) : super(key: key);
 
@@ -49,8 +46,6 @@ class VideoSDKQuickStart extends StatefulWidget {
 }
 
 class _VideoSDKQuickStartState extends State<VideoSDKQuickStart> {
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,8 +55,10 @@ class _VideoSDKQuickStartState extends State<VideoSDKQuickStart> {
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 0.0),
         child: ListView.separated(
-            itemBuilder:(context,index)=> ItemsCallWidget(model: Constants.called[index]),
-            separatorBuilder: (context,index)=> const Divider(color: Colors.white,height: 3),
+            itemBuilder: (context, index) =>
+                ItemsCallWidget(model: Constants.called[index]),
+            separatorBuilder: (context, index) =>
+                const Divider(color: Colors.white, height: 3),
             itemCount: Constants.called.length),
       ),
     );

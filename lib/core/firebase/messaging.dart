@@ -17,28 +17,30 @@ import '../../domain/entities/model_user.dart';
 import '../utils/constants.dart';
 
 class Messaging {
-  Messaging({Key? key,}) ;
+  Messaging({
+    Key? key,
+  });
 
+  static FirebaseMessaging messaging = FirebaseMessaging.instance;
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+  AndroidNotificationChannel channel = const AndroidNotificationChannel(
+      'high_importance_channel', 'High Importance Notifications');
 
-  static FirebaseMessaging messaging=FirebaseMessaging.instance;
-  FlutterLocalNotificationsPlugin  flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-  AndroidNotificationChannel channel = const AndroidNotificationChannel('high_importance_channel','High Importance Notifications');
-
-  Future<void> start(BuildContext context)async{
+  Future<void> start(BuildContext context) async {
     await messaging.setAutoInitEnabled(true);
-    await messaging.getToken().then((value){
-      Constants.tokenMessaging=value;
+    await messaging.getToken().then((value) {
+      Constants.tokenMessaging = value;
       print(Constants.tokenMessaging);
       ChatCubit.get(context).addUser({
-
-        'tokenMessaging':value,
+        'tokenMessaging': value,
       });
     });
 
     messaging.onTokenRefresh.listen((event) {
-      Constants.tokenMessaging=event;
+      Constants.tokenMessaging = event;
       ChatCubit.get(context).addUser({
-        'tokenMessaging':Constants.tokenMessaging,
+        'tokenMessaging': Constants.tokenMessaging,
       });
     });
 
@@ -48,26 +50,27 @@ class Messaging {
     FirebaseMessaging.onMessage.listen((RemoteMessage event) {
       print("message recieved");
 
+      Map<String, dynamic> user = jsonDecode(event.data['User']);
 
-      Map<String,dynamic>user=jsonDecode(event.data['User']);
-
-      if(event.data['click_action']=='calling'){
+      if (event.data['click_action'] == 'calling') {
         Constants.called.add(Calls({
-          "name":user["name"],
-          "receiveId":user["id"],
-          "image":user["image"],
-          'status':'receive',
-          "dateTime":DateTime.now().toString(),
+          "name": user["name"],
+          "receiveId": user["id"],
+          "image": user["image"],
+          'status': 'receive',
+          "dateTime": DateTime.now().toString(),
         }));
-        navigatorReuse(context, AcceptEnd(user:Users.fromJson( jsonDecode(event.data['User'])) , contactRecipient: true, tokenMeeting: event.data['token']));
+        navigatorReuse(
+            context,
+            AcceptEnd(
+                user: Users.fromJson(jsonDecode(event.data['User'])),
+                contactRecipient: true,
+                tokenMeeting: event.data['token']));
       }
-
     });
-
   }
+
   void requestPermission() async {
-
-
     NotificationSettings settings = await messaging.requestPermission(
       alert: true,
       announcement: false,
@@ -80,14 +83,16 @@ class Messaging {
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
       print('User granted permission');
-    } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
+    } else if (settings.authorizationStatus ==
+        AuthorizationStatus.provisional) {
       print('User granted provisional permission');
     } else {
       print('User declined or has not accepted permission');
     }
   }
-  Future<void> message()async{
-    if(Platform.isIOS){
+
+  Future<void> message() async {
+    if (Platform.isIOS) {
       NotificationSettings settings = await messaging.requestPermission(
         alert: true,
         announcement: false,
@@ -109,8 +114,6 @@ class Messaging {
       print(event.data.toString());
       //showToast(text: 'on message opened app', state: ToastStates.ERROR);
     });
-
-
   }
 /*  void loadFCM() async {
     if (!Platform.isWindows) {
@@ -165,65 +168,58 @@ class Messaging {
     });
   }*/
 
-  static Future<void> firebaseMessagingBackgroundHandler(context,RemoteMessage message) async {
+  static Future<void> firebaseMessagingBackgroundHandler(
+      context, RemoteMessage message) async {
     // If you're going to use other Firebase services in the background, such as Firestore,
     // make sure you call `initializeApp` before using other Firebase services.
     await Firebase.initializeApp();
     print("click_action = ${message.data['click_action']}");
     print(message.notification!.body);
-    if(message.data['click_action']=='calling'){
-      navigatorReuse(context,const VideoSDKQuickStart());
+    if (message.data['click_action'] == 'calling') {
+      navigatorReuse(context, const VideoSDKQuickStart());
     }
     print("Handling a background message: ${message.messageId}");
-
   }
 
-
-
-
-  static sendMessage(context, {
+  static sendMessage(
+    context, {
     required Users modelUser,
     required String body,
     required String title,
     required String action,
     required String tokenMeeting,
     required String tokenUser,
-      })async{
-
+  }) async {
     try {
-    http.Response response=  await http.post(
+      http.Response response = await http.post(
         Uri.parse('https://fcm.googleapis.com/fcm/send'),
         headers: <String, String>{
           'Content-Type': 'application/json',
           'Authorization':
-          'key=AAAATXAdSkU:APA91bHapQvGh2vDMfPz_qEGOf2a49qU7qyIKQXvvj0wvmKkpTTi7OwcJFFU_IyAmB2ksVAmxwlAFmfD4jGU26zH-o5o8Jzv52XgWmiF63KULwmzZinwJ9ntM0AGpPsACmAM3uOqGSTC',
+              'key=AAAATXAdSkU:APA91bHapQvGh2vDMfPz_qEGOf2a49qU7qyIKQXvvj0wvmKkpTTi7OwcJFFU_IyAmB2ksVAmxwlAFmfD4jGU26zH-o5o8Jzv52XgWmiF63KULwmzZinwJ9ntM0AGpPsACmAM3uOqGSTC',
         },
         body: jsonEncode(
           {
-
-              'notification': <String, dynamic>{
-                'title': title,
-                'body': body,
-                "sound":"alarm",
-
-              },
-              'priority': 'high',
-              'data': <String, dynamic>{
-                'click_action': action,
-                'token':tokenMeeting,
-                'User':jsonEncode(modelUser.toMap()),
-                'status': 'done'
-              },
-              "to":tokenUser,
-
+            'notification': <String, dynamic>{
+              'title': title,
+              'body': body,
+              "sound": "alarm",
+            },
+            'priority': 'high',
+            'data': <String, dynamic>{
+              'click_action': action,
+              'token': tokenMeeting,
+              'User': jsonEncode(modelUser.toMap()),
+              'status': 'done'
+            },
+            "to": tokenUser,
           },
         ),
       );
 
-    print(jsonDecode(response.body));
+      print(jsonDecode(response.body));
     } catch (e) {
       print(e.toString());
     }
   }
-
 }

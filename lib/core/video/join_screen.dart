@@ -23,15 +23,12 @@ class JoinScreen extends StatelessWidget {
             child: const Text("Create Meeting")),
         const SizedBox(height: 16),
         TextField(
-            decoration:  InputDecoration(
-              hintText: "Meeting ID",
-              border: const OutlineInputBorder(),
-              enabledBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white,width: 1)
-              ),
-
-              hintStyle: AppStyles.style16.copyWith(color: Colors.white)
-            ),
+            decoration: InputDecoration(
+                hintText: "Meeting ID",
+                border: const OutlineInputBorder(),
+                enabledBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white, width: 1)),
+                hintStyle: AppStyles.style16.copyWith(color: Colors.white)),
             style: AppStyles.style16.copyWith(color: Colors.white),
             onChanged: onMeetingIdChanged),
         const SizedBox(height: 8),

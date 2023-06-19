@@ -12,10 +12,11 @@ final router = GoRouter(
   routes: [
     GoRoute(
       path: '/',
-      builder: (context, state) =>
-          Constants.idForMe == null || Constants.idForMe == ''
-              ? SignIn()
-              : const MainPage(),
+      builder: (context, state) => Constants.idForMe == null ||
+              Constants.idForMe == '' ||
+              Constants.idForMe == 'null'
+          ? SignIn()
+          : const MainPage(),
     ),
     /*GoRoute(
         path: '/Chat',
@@ -27,7 +28,7 @@ final router = GoRouter(
     ),
     GoRoute(
       path: '/Edit',
-      builder: (context, state) => Profile(),
+      builder: (context, state) => Profile(firstTimeSign: false),
     ),
     GoRoute(
       path: '/Sign',

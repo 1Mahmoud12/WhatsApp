@@ -7,30 +7,28 @@ class LoadingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double heightMedia=MediaQuery.of(context).size.height;
-    double widthMedia=MediaQuery.of(context).size.width;
+    double heightMedia = MediaQuery.of(context).size.height;
+    double widthMedia = MediaQuery.of(context).size.width;
     return Shimmer.fromColors(
       baseColor: const Color.fromRGBO(208, 200, 200, .5),
       highlightColor: const Color.fromRGBO(140, 160, 140, 1),
       enabled: enabled,
       child: Column(
         mainAxisSize: MainAxisSize.max,
-        children: List.generate(7, (index) => item(heightMedia,widthMedia)),
+        children: List.generate(7, (index) => item(heightMedia, widthMedia)),
       ),
     );
   }
 
-  Widget item(double withMedia,double heightMedia) {
-
+  Widget item(double withMedia, double heightMedia) {
     return SizedBox(
-      height: heightMedia*.12,
-      child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start, children: [
+      height: heightMedia * .12,
+      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Padding(
           padding: const EdgeInsets.only(top: 8.0),
           child: CircleAvatar(
             backgroundColor: Colors.white,
-            radius: withMedia*.02,
+            radius: withMedia * .02,
           ),
         ),
         const Padding(
@@ -45,7 +43,7 @@ class LoadingScreen extends StatelessWidget {
             ),
             Container(
               width: double.infinity,
-              height:heightMedia*.02,
+              height: heightMedia * .02,
               color: Colors.white,
             ),
             const Padding(
@@ -53,15 +51,15 @@ class LoadingScreen extends StatelessWidget {
             ),
             Container(
               width: double.infinity,
-              height: heightMedia*.01,
+              height: heightMedia * .01,
               color: Colors.white,
             ),
             const Padding(
               padding: EdgeInsets.symmetric(vertical: 2.0),
             ),
             Container(
-              width: withMedia*.01,
-              height: heightMedia*.01,
+              width: withMedia * .01,
+              height: heightMedia * .01,
               color: Colors.white,
             ),
           ],

@@ -22,8 +22,7 @@ class MessageScreen extends StatelessWidget {
     if (!Constants.connection) {
       Future.delayed(
         const Duration(milliseconds: 10),
-        () => ScaffoldMessenger.of(context)
-            .showSnackBar(snackBarMe(color: Colors.red, text: 'no connection')),
+        () => ScaffoldMessenger.of(context).showSnackBar(snackBarMe(color: Colors.red, text: 'no connection')),
       );
     }
     List<Contact>? model = ChatCubit.get(context).contacts;
@@ -31,14 +30,13 @@ class MessageScreen extends StatelessWidget {
       appBar: AppBar(
         leading: ElevatedButton(
           onPressed: () {
+            ChatCubit.get(context).getContact();
             showModalBottomSheet(
                 context: context,
                 clipBehavior: Clip.hardEdge,
                 shape: RoundedRectangleBorder(
                     side: BorderSide(color: HexColor(AppColors.lightColor)),
-                    borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        topRight: Radius.circular(20))),
+                    borderRadius: const BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
                 backgroundColor: Colors.black,
                 builder: (context) => ListView.builder(
                       itemBuilder: (context, index) {
@@ -49,21 +47,15 @@ class MessageScreen extends StatelessWidget {
                                   color: Colors.white,
                                   size: 35,
                                 )
-                              : CircleAvatar(
-                                  radius: 18,
-                                  child: Image.memory(model[index].photo!)),
+                              : CircleAvatar(radius: 18, child: Image.memory(model[index].photo!)),
                           title: Text(
                             model[index].displayName,
-                            style:
-                                AppStyles.style16.copyWith(color: Colors.white),
+                            style: AppStyles.style16.copyWith(color: Colors.white),
                             overflow: TextOverflow.ellipsis,
                           ),
                           subtitle: Text(
-                            model[index].phones.isNotEmpty
-                                ? model[index].phones[0].number
-                                : 'no number',
-                            style: AppStyles.style15.copyWith(
-                                color: HexColor(AppColors.lightColor)),
+                            model[index].phones.isNotEmpty ? model[index].phones[0].number : 'no number',
+                            style: AppStyles.style15.copyWith(color: HexColor(AppColors.lightColor)),
                             overflow: TextOverflow.ellipsis,
                           ),
                         );
@@ -71,8 +63,7 @@ class MessageScreen extends StatelessWidget {
                       itemCount: ChatCubit.get(context).contacts!.length,
                     ));
           },
-          style: const ButtonStyle(
-              backgroundColor: MaterialStatePropertyAll<Color>(Colors.black)),
+          style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Colors.black)),
           child: Image.asset(
             'assets/img_1.png',
           ),
@@ -84,11 +75,9 @@ class MessageScreen extends StatelessWidget {
         actions: [
           ElevatedButton(
             onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                  backgroundColor: Colors.red, content: Text("error")));
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(backgroundColor: Colors.red, content: Text("error")));
             },
-            style: const ButtonStyle(
-                backgroundColor: MaterialStatePropertyAll<Color>(Colors.black)),
+            style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Colors.black)),
             child: Image.asset(
               'assets/img_2.png',
             ),
@@ -98,16 +87,21 @@ class MessageScreen extends StatelessWidget {
       body: BlocBuilder<ChatCubit, ChatState>(
         builder: (context, state) {
           return ConditionalBuilder(
-            condition: ChatRemoteDatsSource.users.isNotEmpty &&
-                ChatCubit.get(context).lastMessage.isNotEmpty,
+            condition: ChatRemoteDatsSource.users.isNotEmpty && ChatCubit.get(context).lastMessage.isNotEmpty,
             builder: (context) => ListView.builder(
               itemBuilder: (context, index) {
                 return ItemBuilderHomePage(indexOfUsers: index);
               },
               itemCount: ChatRemoteDatsSource.users.length,
             ),
-            fallback: (context) => LoadingScreen(
-                enabled: ChatCubit.get(context).enabledMessagesScreen),
+            fallback: (context) {
+              return ConditionalBuilder(
+                  condition: ChatRemoteDatsSource.users.isEmpty && state is GetAllUsersSuccessState,
+                  builder: (context) => const Center(
+                        child: Text('No Chats'),
+                      ),
+                  fallback: (context) => LoadingScreen(enabled: ChatCubit.get(context).enabledMessagesScreen));
+            },
           );
         },
       ),

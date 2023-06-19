@@ -5,8 +5,8 @@ class CreateMessagesUseCase {
 
   CreateMessagesUseCase(this.chatRepositoryDomain);
 
-  Future call(Map<String,dynamic>json) async{
-     chatRepositoryDomain.createMessage(json);
+  Future call(Map<String, dynamic> json) async {
+    chatRepositoryDomain.createMessage(json);
   }
 }
 
@@ -15,7 +15,7 @@ class GetLastMessageUseCase {
 
   GetLastMessageUseCase(this.chatRepositoryDomain);
 
-  Future call(String receiveId) async{
+  Future call(String receiveId) async {
     chatRepositoryDomain.lastMessage(receiveId);
   }
 }

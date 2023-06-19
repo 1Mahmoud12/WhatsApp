@@ -1,4 +1,3 @@
-
 import 'package:chat_first/data/data_source/remote_data_source.dart';
 import 'package:chat_first/data/repository/chat_repository.dart';
 import 'package:chat_first/domain/repository/chat_repository.dart';
@@ -8,26 +7,28 @@ import 'package:chat_first/domain/use_case/get_chat.dart';
 import 'package:chat_first/domain/use_case/get_users_use_case.dart';
 import 'package:get_it/get_it.dart';
 
-final seGet=GetIt.instance;
+final seGet = GetIt.instance;
 
+class ServiceGetIt {
+  void init() {
+    /// Data Source
+    seGet.registerLazySingleton<ChatRemoteDatsSourceRepository>(
+        () => ChatRemoteDatsSource());
 
-class ServiceGetIt{
+    /// Repository
+    seGet.registerLazySingleton<ChatRepositoryDomain>(
+        () => ChatRepository(seGet()));
 
-void init()
-{
-  /// Data Source
-  seGet.registerLazySingleton<ChatRemoteDatsSourceRepository>(() => ChatRemoteDatsSource());
-  /// Repository
-  seGet.registerLazySingleton<ChatRepositoryDomain>(() => ChatRepository(seGet()));
-
-  ///USE CASE
-  seGet.registerLazySingleton<AddUsersUseCase>(() => AddUsersUseCase(seGet()));
-  seGet.registerLazySingleton<GetUsersUseCase>(() => GetUsersUseCase(seGet()));
-  seGet.registerLazySingleton<CreateMessagesUseCase>(() => CreateMessagesUseCase(seGet()));
-  seGet.registerLazySingleton<GetChatsUseCase>(() => GetChatsUseCase(seGet()));
-  seGet.registerLazySingleton<GetLastMessageUseCase>(() => GetLastMessageUseCase(seGet()));
-
-}
-
-
+    ///USE CASE
+    seGet
+        .registerLazySingleton<AddUsersUseCase>(() => AddUsersUseCase(seGet()));
+    seGet
+        .registerLazySingleton<GetUsersUseCase>(() => GetUsersUseCase(seGet()));
+    seGet.registerLazySingleton<CreateMessagesUseCase>(
+        () => CreateMessagesUseCase(seGet()));
+    seGet
+        .registerLazySingleton<GetChatsUseCase>(() => GetChatsUseCase(seGet()));
+    seGet.registerLazySingleton<GetLastMessageUseCase>(
+        () => GetLastMessageUseCase(seGet()));
+  }
 }

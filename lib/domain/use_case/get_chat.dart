@@ -7,7 +7,7 @@ class GetChatsUseCase {
 
   GetChatsUseCase(this.chatRepositoryDomain);
 
-  Future<List<Message>> call(String receiveId) async{
-   return await chatRepositoryDomain.getChats(receiveId);
+  Future<List<Message>> call(String receiveId) async {
+    return await chatRepositoryDomain.getChats(receiveId);
   }
 }

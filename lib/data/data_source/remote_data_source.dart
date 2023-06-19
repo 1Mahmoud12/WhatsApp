@@ -19,14 +19,11 @@ class ChatRemoteDatsSource extends ChatRemoteDatsSourceRepository {
   Future<void> addUserRemoteDataSource(Map<String, dynamic> json) async {
     if (Constants.idForMe == null) {
       await fireStoreUsers.doc(json['id']).set(json).then((value) {
+        Constants.idForMe = json['id'];
         SharedPreference.putDataString('id', json['id']);
       });
     } else {
-      //print(json);
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(Constants.idForMe)
-          .update(json);
+      await FirebaseFirestore.instance.collection('users').doc(Constants.idForMe).update(json);
     }
   }
 

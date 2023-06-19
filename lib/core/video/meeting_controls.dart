@@ -20,7 +20,7 @@ class MeetingControls extends StatelessWidget {
       children: [
         Expanded(
           child: FilledButton.icon(
-            onPressed:onLeaveButtonPressed,
+            onPressed: onLeaveButtonPressed,
             icon: const Icon(Icons.output),
             label: const Text('Leave'),
             style: const ButtonStyle(

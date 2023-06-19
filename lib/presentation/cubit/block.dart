@@ -42,7 +42,7 @@ class ChatCubit extends Cubit<ChatState> {
     const VideoSDKQuickStart(),
     const MessageScreen(),
     const MessageScreen(),
-    Profile(),
+    Profile(firstTimeSign: false),
   ];
 
   void changeIndex(int index) {

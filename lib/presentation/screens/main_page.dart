@@ -18,14 +18,10 @@ class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<BottomNavigationBarItem> bottomNavigationBar = [
-      const BottomNavigationBarItem(
-          label: 'call', icon: Icon(Ionicons.call_outline)),
-      const BottomNavigationBarItem(
-          label: 'camera', icon: Icon(Ionicons.camera_outline)),
-      const BottomNavigationBarItem(
-          label: 'message', icon: Icon(Ionicons.chatbox_outline)),
-      const BottomNavigationBarItem(
-          label: 'people', icon: FaIcon(FontAwesomeIcons.circleUser)),
+      const BottomNavigationBarItem(label: 'call', icon: Icon(Ionicons.call_outline)),
+      const BottomNavigationBarItem(label: 'camera', icon: Icon(Ionicons.camera_outline)),
+      const BottomNavigationBarItem(label: 'message', icon: Icon(Ionicons.chatbox_outline)),
+      const BottomNavigationBarItem(label: 'people', icon: FaIcon(FontAwesomeIcons.circleUser)),
     ];
 
     return BlocBuilder<ChatCubit, ChatState>(
@@ -34,22 +30,16 @@ class MainPage extends StatelessWidget {
         if (!ChatCubit.get(context).createTokenMessaging) {
           Messaging().start(context);
 
-          Timer.periodic(
-              const Duration(minutes: 1),
-              (timer) => ChatCubit.get(context)
-                  .addUser({'lastSeen': DateTime.now().toString()}));
-          ChatCubit.get(context).createTokenMessaging =
-              ChatCubit.get(context).changeBool(false);
+          Timer.periodic(const Duration(minutes: 1), (timer) => ChatCubit.get(context).addUser({'lastSeen': DateTime.now().toString()}));
+          ChatCubit.get(context).createTokenMessaging = ChatCubit.get(context).changeBool(false);
         }
         if (Constants.newMessageOnBackground) {
           print('/*////////////////////////////////////////////');
-          Messaging.firebaseMessagingBackgroundHandler(
-              context, Constants.newMessage!);
+          Messaging.firebaseMessagingBackgroundHandler(context, Constants.newMessage!);
           ChatCubit.get(context).changeBool(Constants.newMessageOnBackground);
         }
         return Scaffold(
-          body: ChatCubit.get(context)
-              .screens[ChatCubit.get(context).currentState],
+          body: ChatCubit.get(context).screens[ChatCubit.get(context).currentState],
           bottomNavigationBar: BottomNavigationBar(
             type: BottomNavigationBarType.fixed,
             showSelectedLabels: false,
@@ -59,20 +49,14 @@ class MainPage extends StatelessWidget {
               /// to change bottom navigation bar
               ChatCubit.get(context).changeIndex(index);
               if (index == 2) {
-                ChatCubit.get(context)
-                    .changeBool(ChatCubit.get(context).enabledMessagesScreen);
+                ChatCubit.get(context).getLastMessage();
+                ChatCubit.get(context).changeBool(ChatCubit.get(context).enabledMessagesScreen);
                 ChatCubit.get(context).getAllUsers();
               }
               if (index == 1) {
                 await availableCameras().then(
-                  (value) => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => CameraPage(cameras: value))),
+                  (value) => Navigator.push(context, MaterialPageRoute(builder: (_) => CameraPage(cameras: value))),
                 );
-              }
-              if (index == 3) {
-                ChatCubit.get(context).getContact();
               }
             },
             items: bottomNavigationBar,

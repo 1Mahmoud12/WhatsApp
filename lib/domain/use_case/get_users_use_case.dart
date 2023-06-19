@@ -6,7 +6,7 @@ class GetUsersUseCase {
 
   GetUsersUseCase(this.chatRepositoryDomain);
 
-  Future<List<Users>> call() async{
+  Future<List<Users>> call() async {
     return await chatRepositoryDomain.getUsers();
   }
 }

@@ -1,20 +1,19 @@
+import 'package:chat_first/core/utils/styles.dart';
 import 'package:chat_first/domain/entities/model_calls.dart';
 import 'package:chat_first/domain/entities/model_user.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:liquid_progress_indicator/liquid_progress_indicator.dart';
 
 import '../firebase/messaging.dart';
+import '../network/local.dart';
 import '../video/api.dart';
 import '../video/meeting_screen.dart';
 import 'constants.dart';
 
 String subStringForDate({required String date}) {
   String today = DateTime.now().toString().substring(5, 10);
-  String tomorrow =
-      DateTime.now().add(const Duration(days: 1)).toString().substring(5, 10);
-  String yasterday =
-      DateTime.now().add(const Duration(days: -1)).toString().substring(5, 10);
+  String tomorrow = DateTime.now().add(const Duration(days: 1)).toString().substring(5, 10);
+  String yasterday = DateTime.now().add(const Duration(days: -1)).toString().substring(5, 10);
 
   if (today == date.substring(5, 10)) {
     return subStringForTime(time: date);
@@ -88,32 +87,26 @@ Widget logo(widthMedia, model) {
   return Padding(
     padding: const EdgeInsets.only(top: 10, left: 8.0),
     child: Container(
-      decoration: BoxDecoration(
-          color: Colors.blueGrey, borderRadius: BorderRadius.circular(10)),
+      decoration: BoxDecoration(color: Colors.blueGrey, borderRadius: BorderRadius.circular(10)),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Row(
           children: [
             Expanded(
               flex: 1,
-              child: CircleAvatar(
-                  radius: 15,
-                  backgroundColor: Colors.white.withOpacity(0),
-                  child: Image(image: NetworkImage(model.logo))),
+              child: CircleAvatar(radius: 15, backgroundColor: Colors.white.withOpacity(0), child: Image(image: NetworkImage(model.logo))),
             ),
             Expanded(
                 flex: 3,
                 child: Text(
                   model.name,
-                  style: TextStyle(
-                      fontSize: widthMedia * .06, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: widthMedia * .06, fontWeight: FontWeight.bold),
                 )),
             Expanded(
                 flex: 2,
                 child: Text(
                   'substitution',
-                  style: TextStyle(
-                      fontSize: widthMedia * .05, fontWeight: FontWeight.w500),
+                  style: TextStyle(fontSize: widthMedia * .05, fontWeight: FontWeight.w500),
                 )),
           ],
         ),
@@ -122,27 +115,7 @@ Widget logo(widthMedia, model) {
   );
 }
 
-Widget indicator() {
-  return SizedBox(
-    height: 50,
-    child: Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: LiquidLinearProgressIndicator(
-        value: 0.6, // Defaults to 0.5.
-        valueColor: const AlwaysStoppedAnimation(
-            Colors.pink), // Defaults to the current Theme's accentColor.
-        backgroundColor:
-            Colors.white, // Defaults to the current Theme's backgroundColor.
-        borderColor: Colors.red[100],
-        borderWidth: 5.0,
-        borderRadius: 12.0,
-        direction: Axis
-            .vertical, // The direction the liquid moves (Axis.vertical = bottom to top, Axis.horizontal = left to right). Defaults to Axis.horizontal.
-        center: const Text("Loading..."),
-      ),
-    ),
-  );
-}
+
 
 callFunction(context, Users model) async {
   String tokenMeeting = await createMeeting();
@@ -168,4 +141,45 @@ callFunction(context, Users model) async {
         meetingId: tokenMeeting,
         leaveMeeting: () => Navigator.pop(context),
       ));
+}
+
+Widget textField({required context, required String nameField, required TextEditingController controller}) {
+  return Center(
+    child: Padding(
+      padding: const EdgeInsets.only(left: 10.0),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 2,
+            child: Text(
+              '$nameField :',
+              style: AppStyles.style16,
+            ),
+          ),
+          Expanded(
+            flex: 8,
+            child: TextFormField(
+              controller: controller,
+              keyboardType: TextInputType.phone,
+              obscureText: nameField == 'password',
+              decoration: InputDecoration(
+                hintText: controller.text == '' ? 'Enter $nameField' : controller.text,
+                hintStyle: AppStyles.style15.copyWith(color: Colors.white38),
+                border: const OutlineInputBorder(),
+                enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.white, width: 1)),
+              ),
+              style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 20, color: Colors.white),
+              onFieldSubmitted: (value) {
+                if (value.isNotEmpty) {
+                  controller.text = value;
+                  SharedPreference.putDataString(nameField, value);
+                }
+                //controller.clear();
+              },
+            ),
+          )
+        ],
+      ),
+    ),
+  );
 }

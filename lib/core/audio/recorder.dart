@@ -94,7 +94,7 @@ class _RecorderState extends State<Recorder>
             ),
             const Spacer(),
             IconButton(
-                padding: EdgeInsetsDirectional.only(bottom: 10),
+                padding: const EdgeInsetsDirectional.only(bottom: 10),
                 onPressed: () async {
                   if (recorder.isRecording) {
                     await stop();

@@ -5,7 +5,7 @@ class AddUsersUseCase {
 
   AddUsersUseCase(this.chatRepositoryDomain);
 
- void call(Map<String,dynamic>json) async{
-     chatRepositoryDomain.addUsersDomain(json);
+  void call(Map<String, dynamic> json) async {
+    chatRepositoryDomain.addUsersDomain(json);
   }
 }

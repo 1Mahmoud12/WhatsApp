@@ -4,7 +4,8 @@ import 'package:videosdk/videosdk.dart';
 class ParticipantTile extends StatelessWidget {
   final Stream stream;
   const ParticipantTile({
-    Key? key, required this.stream,
+    Key? key,
+    required this.stream,
   }) : super(key: key);
 
   @override

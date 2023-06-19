@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 abstract class AppStyles {
@@ -11,11 +10,9 @@ abstract class AppStyles {
     fontSize: 15,
     fontWeight: FontWeight.w700,
     overflow: TextOverflow.ellipsis,
-
   );
   static const TextStyle style13 = TextStyle(
-    fontSize: 13,
-    fontWeight: FontWeight.w700,
-    overflow: TextOverflow.ellipsis
-  );
+      fontSize: 13,
+      fontWeight: FontWeight.w700,
+      overflow: TextOverflow.ellipsis);
 }

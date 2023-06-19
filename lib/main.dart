@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:chat_first/core/go_router.dart';
 import 'package:chat_first/core/network/local.dart';
 import 'package:chat_first/presentation/cubit/block.dart';
+import 'package:chat_first/presentation/screens/sign_in/sign_cubit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -37,7 +38,7 @@ void main() async {
 
   Future<bool> hasNetwork() async {
     try {
-      final result = await http.get(Uri.parse('www.google.com'));
+      final result = await http.get(Uri.parse('http://www.google.com'));
       if (result.statusCode == 200) {
         return true;
       } else {
@@ -51,19 +52,18 @@ void main() async {
   Constants.connection = await hasNetwork();
 
   await Firebase.initializeApp();
-  await FirebaseAppCheck.instance.activate(
-      webRecaptchaSiteKey: 'recaptcha-v3-site-key',
-      androidProvider: AndroidProvider.playIntegrity);
+  await FirebaseAppCheck.instance.activate(webRecaptchaSiteKey: 'recaptcha-v3-site-key', androidProvider: AndroidProvider.playIntegrity);
 
   FirebaseFirestore.instance;
   FirebaseStorage.instance;
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   // Constants.users[0].name = await SharedPreference.getData('name') ?? 'no Name';
-  if (await SharedPreference.getData('id') != null ||
-      await SharedPreference.getData('id') != '') {
+  Constants.idForMe = null;
+  if (await SharedPreference.getData('id') == null) {
     Constants.idForMe = await SharedPreference.getData('id');
+    ChatRemoteDatsSource().getUserRemoteDataSource();
   }
-  ChatRemoteDatsSource().getUserRemoteDataSource();
+
   Bloc.observer = MyBlocObserver();
 
   ServiceGetIt().init();
@@ -76,11 +76,21 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) =>
-          ChatCubit(seGet(), seGet(), seGet(), seGet(), seGet())
-            ..getAllUsers()
-            ..getLastMessage(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+            create: (context) => ChatCubit(
+                  seGet(),
+                  seGet(),
+                  seGet(),
+                  seGet(),
+                  seGet(),
+                )),
+        BlocProvider(
+            create: (context) => SignCubit(
+                  seGet(),
+                )),
+      ],
       child: BlocBuilder<ChatCubit, ChatState>(
         builder: (context, state) => MaterialApp.router(
           theme: dark,

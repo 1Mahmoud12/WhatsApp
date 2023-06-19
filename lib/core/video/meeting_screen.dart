@@ -14,7 +14,7 @@ class MeetingScreen extends StatefulWidget {
 
   const MeetingScreen(
       {Key? key,
-        required this.namePerson,
+      required this.namePerson,
       required this.meetingId,
       required this.token,
       required this.leaveMeeting})
@@ -96,17 +96,19 @@ class _MeetingScreenState extends State<MeetingScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            SizedBox(height: MediaQuery.of(context).size.height*.1,),
-            Text(widget.namePerson,style: AppStyles.style16.copyWith(color: HexColor(AppColors.boldColor))),
-
+            SizedBox(
+              height: MediaQuery.of(context).size.height * .1,
+            ),
+            Text(widget.namePerson,
+                style: AppStyles.style16
+                    .copyWith(color: HexColor(AppColors.boldColor))),
             ...participantVideoStreams.values
                 .map(
                   (e) => ParticipantTile(
-                stream: e!,
-              ),
-            )
+                    stream: e!,
+                  ),
+                )
                 .toList(),
-
           ],
         ),
         MeetingControls(
@@ -121,7 +123,6 @@ class _MeetingScreenState extends State<MeetingScreen> {
           onLeaveButtonPressed: () {
             room.end();
             room.leave();
-
           },
         ),
       ],
