@@ -31,17 +31,16 @@ class ChatRemoteDatsSource extends ChatRemoteDatsSourceRepository {
   static List<Users> users = [];
   @override
   Future<List<Users>> getUserRemoteDataSource() async {
-    await FirebaseFirestore.instance.collection('users').get().then((value) {
+    await FirebaseFirestore.instance.collection('users').get().then((value) async {
       users = [];
 
-      for (var element in value.docs) {
-        if (element.id != Constants.idForMe) {
-          users.add(Users.fromJson(element.data()));
-        } else {
+      value.docs.forEach((element) {
+        if (element.data()['id'] == Constants.idForMe) {
           Constants.usersForMe = Users.fromJson(element.data());
-          print(" SSSSSSSSSSSSSSSSSSs :: ${Constants.usersForMe}");
+        } else {
+          users.add(Users.fromJson(element.data()));
         }
-      }
+      });
       lengthUsers = value.docs.length;
     });
 

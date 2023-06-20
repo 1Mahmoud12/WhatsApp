@@ -5,7 +5,6 @@ import 'package:chat_first/core/utils/general_functions.dart';
 import 'package:chat_first/presentation/cubit/block.dart';
 import 'package:chat_first/presentation/screens/call_screen/accept_end.dart';
 import 'package:chat_first/presentation/screens/call_screen/call_screen.dart';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -22,19 +21,19 @@ class Messaging {
   });
 
   static FirebaseMessaging messaging = FirebaseMessaging.instance;
-  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
-  AndroidNotificationChannel channel = const AndroidNotificationChannel(
-      'high_importance_channel', 'High Importance Notifications');
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  AndroidNotificationChannel channel = const AndroidNotificationChannel('high_importance_channel', 'High Importance Notifications');
 
   Future<void> start(BuildContext context) async {
     await messaging.setAutoInitEnabled(true);
     await messaging.getToken().then((value) {
-      Constants.tokenMessaging = value;
-      print(Constants.tokenMessaging);
-      ChatCubit.get(context).addUser({
-        'tokenMessaging': value,
-      });
+      if (value != null) {
+        Constants.tokenMessaging = value;
+
+        ChatCubit.get(context).addUser({
+          'tokenMessaging': value,
+        });
+      }
     });
 
     messaging.onTokenRefresh.listen((event) {
@@ -61,11 +60,7 @@ class Messaging {
           "dateTime": DateTime.now().toString(),
         }));
         navigatorReuse(
-            context,
-            AcceptEnd(
-                user: Users.fromJson(jsonDecode(event.data['User'])),
-                contactRecipient: true,
-                tokenMeeting: event.data['token']));
+            context, AcceptEnd(user: Users.fromJson(jsonDecode(event.data['User'])), contactRecipient: true, tokenMeeting: event.data['token']));
       }
     });
   }
@@ -83,8 +78,7 @@ class Messaging {
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
       print('User granted permission');
-    } else if (settings.authorizationStatus ==
-        AuthorizationStatus.provisional) {
+    } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
       print('User granted provisional permission');
     } else {
       print('User declined or has not accepted permission');
@@ -168,8 +162,7 @@ class Messaging {
     });
   }*/
 
-  static Future<void> firebaseMessagingBackgroundHandler(
-      context, RemoteMessage message) async {
+  static Future<void> firebaseMessagingBackgroundHandler(context, RemoteMessage message) async {
     // If you're going to use other Firebase services in the background, such as Firestore,
     // make sure you call `initializeApp` before using other Firebase services.
     await Firebase.initializeApp();
@@ -206,12 +199,7 @@ class Messaging {
               "sound": "alarm",
             },
             'priority': 'high',
-            'data': <String, dynamic>{
-              'click_action': action,
-              'token': tokenMeeting,
-              'User': jsonEncode(modelUser.toMap()),
-              'status': 'done'
-            },
+            'data': <String, dynamic>{'click_action': action, 'token': tokenMeeting, 'User': jsonEncode(modelUser.toMap()), 'status': 'done'},
             "to": tokenUser,
           },
         ),

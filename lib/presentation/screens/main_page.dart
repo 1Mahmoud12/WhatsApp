@@ -51,7 +51,7 @@ class MainPage extends StatelessWidget {
               if (index == 2) {
                 ChatCubit.get(context).getLastMessage();
                 ChatCubit.get(context).changeBool(ChatCubit.get(context).enabledMessagesScreen);
-                ChatCubit.get(context).getAllUsers();
+                //ChatCubit.get(context).getAllUsers();
               }
               if (index == 1) {
                 await availableCameras().then(

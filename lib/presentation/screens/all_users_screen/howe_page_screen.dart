@@ -87,20 +87,23 @@ class MessageScreen extends StatelessWidget {
       body: BlocBuilder<ChatCubit, ChatState>(
         builder: (context, state) {
           return ConditionalBuilder(
-            condition: ChatRemoteDatsSource.users.isNotEmpty && ChatCubit.get(context).lastMessage.isNotEmpty,
-            builder: (context) => ListView.builder(
-              itemBuilder: (context, index) {
-                return ItemBuilderHomePage(indexOfUsers: index);
-              },
-              itemCount: ChatRemoteDatsSource.users.length,
-            ),
+            condition: ChatRemoteDatsSource.lastMessage != null,
+            builder: (context) {
+              print(ChatRemoteDatsSource.lastMessage);
+              return ListView.builder(
+                itemBuilder: (context, index) {
+                  return ItemBuilderHomePage(indexOfUsers: index);
+                },
+                itemCount: ChatRemoteDatsSource.users.length,
+              );
+            },
             fallback: (context) {
               return ConditionalBuilder(
-                  condition: ChatRemoteDatsSource.users.isEmpty && state is GetAllUsersSuccessState,
-                  builder: (context) => const Center(
+                  condition: ChatRemoteDatsSource.lastMessage != null && state is! GetMessagesLoadingState,
+                  builder: (context) => LoadingScreen(enabled: ChatCubit.get(context).enabledMessagesScreen),
+                  fallback: (context) => const Center(
                         child: Text('No Chats'),
-                      ),
-                  fallback: (context) => LoadingScreen(enabled: ChatCubit.get(context).enabledMessagesScreen));
+                      ));
             },
           );
         },

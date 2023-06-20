@@ -110,7 +110,7 @@ class SignIn extends StatelessWidget {
                                 'phone': phoneController.text,
                                 'lastSeen': DateTime.now().toString(),
                               });
-                              Navigator.of(context).push(createRoute(Profile(firstTimeSign: true), -1, 1));
+                              Navigator.of(context).pushReplacement(createRoute(Profile(firstTimeSign: true), -1, 1));
                             });
                           },
                           codeAutoRetrievalTimeout: (String verificationId) {},

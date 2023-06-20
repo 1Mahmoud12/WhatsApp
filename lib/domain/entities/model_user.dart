@@ -24,13 +24,11 @@ class Users extends Equatable {
   });
 
   Users.fromJson(Map<String, dynamic> json) {
-    json['id'] != null ? id = json['id'] : Constants.idForMe;
-    json['name'] != null ? name = json['name'] : Constants.usersForMe!.name;
-    json['age'] != null ? age = json['age'] : Constants.usersForMe!.age;
-    json['tokenMessaging'] != null
-        ? tokenMessaging = json['tokenMessaging']
-        : Constants.tokenMessaging;
-    json['phone'] != null ? phone = json['phone'] : Constants.usersForMe!.phone;
+    id = json['id'] ?? Constants.usersForMe!.id;
+    name = json['name'] ?? Constants.usersForMe!.name;
+    json['age'] != null ? age = json['age'] : '';
+    json['tokenMessaging'] != null ? tokenMessaging = json['tokenMessaging'] : Constants.tokenMessaging;
+    phone = json['phone'];
     json['image'] != null ? image = json['image'] : "assets/person.png";
     json['lastSeen'] != null ? lastSeen = json['lastSeen'] : '';
   }
@@ -40,7 +38,7 @@ class Users extends Equatable {
       'id': id ?? Constants.idForMe,
       'name': name ?? Constants.usersForMe!.name,
       'age': age ?? Constants.usersForMe!.age,
-      'image': image ?? Constants.usersForMe!.image,
+      'image': image ?? "assets/person.png",
       'phone': phone ?? Constants.usersForMe!.phone,
       'tokenMessaging': tokenMessaging ?? Constants.tokenMessaging,
       'lastSeen': lastSeen ?? Constants.usersForMe!.lastSeen ?? '',
@@ -49,6 +47,5 @@ class Users extends Equatable {
 
   @override
   // TODO: implement props
-  List<Object?> get props =>
-      [id, name, age, phone, image, tokenMessaging, lastSeen];
+  List<Object?> get props => [id, name, age, phone, image, tokenMessaging, lastSeen];
 }

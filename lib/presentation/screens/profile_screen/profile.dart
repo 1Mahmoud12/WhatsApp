@@ -92,7 +92,13 @@ class Profile extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                TextButton(
+                OutlinedButton(
+                    style: const ButtonStyle(
+                        animationDuration: Duration(seconds: 1),
+                        side: MaterialStatePropertyAll(BorderSide(
+                          width: 2,
+                          color: Colors.blue,
+                        ))),
                     onPressed: () async {
                       Constants.usersForMe!.name = nameController.text;
                       Constants.usersForMe!.phone = phoneController.text;
@@ -109,7 +115,9 @@ class Profile extends StatelessWidget {
                     },
                     child: Text(
                       firstTimeSign ? 'Sign' : 'Update',
-                      style: AppStyles.style15.copyWith(color: HexColor(AppColors.lightColor)),
+                      style: AppStyles.style15.copyWith(
+                        color: HexColor(AppColors.lightColor),
+                      ),
                     ))
               ],
             )

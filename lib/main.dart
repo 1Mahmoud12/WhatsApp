@@ -57,10 +57,11 @@ void main() async {
   FirebaseFirestore.instance;
   FirebaseStorage.instance;
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  // Constants.users[0].name = await SharedPreference.getData('name') ?? 'no Name';
-  Constants.idForMe = null;
-  if (await SharedPreference.getData('id') == null) {
-    Constants.idForMe = await SharedPreference.getData('id');
+
+  String? id = await SharedPreference.getData('id');
+  if (id != null) {
+    Constants.idForMe = id;
+
     ChatRemoteDatsSource().getUserRemoteDataSource();
   }
 

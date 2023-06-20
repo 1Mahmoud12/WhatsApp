@@ -26,12 +26,7 @@ class ChatCubit extends Cubit<ChatState> {
   final CreateMessagesUseCase createMessageUseCase;
   final GetChatsUseCase getChatsUseCase;
   final GetLastMessageUseCase getLastMessageUseCase;
-  ChatCubit(
-      this.addUsersUseCase,
-      this.getUsersUseCase,
-      this.createMessageUseCase,
-      this.getChatsUseCase,
-      this.getLastMessageUseCase)
+  ChatCubit(this.addUsersUseCase, this.getUsersUseCase, this.createMessageUseCase, this.getChatsUseCase, this.getLastMessageUseCase)
       : super(InitialState());
 
   static ChatCubit get(context) => BlocProvider.of(context);
@@ -53,8 +48,7 @@ class ChatCubit extends Cubit<ChatState> {
   List<Contact>? contacts;
   Future<List<Contact>> getContact() async {
     if (await FlutterContacts.requestPermission()) {
-      contacts = await FlutterContacts.getContacts(
-          withProperties: true, withPhoto: true);
+      contacts = await FlutterContacts.getContacts(withProperties: true, withPhoto: true);
     }
     emit(GetContactState());
     return contacts ?? [];
@@ -63,8 +57,7 @@ class ChatCubit extends Cubit<ChatState> {
   Future getImage() async {
     emit(GetImageLoadingState());
     final ImagePicker picker = ImagePicker();
-    final XFile? imagePicker =
-        await picker.pickImage(source: ImageSource.gallery);
+    final XFile? imagePicker = await picker.pickImage(source: ImageSource.gallery);
 
     firebase_storage.FirebaseStorage.instance
         .ref()
@@ -103,16 +96,12 @@ class ChatCubit extends Cubit<ChatState> {
   }
 
   Future getMyData() async {
-    FirebaseFirestore.instance
-        .collection(Constants.collectionUser)
-        .doc(Constants.idForMe)
-        .get()
-        .then((value) {
+    FirebaseFirestore.instance.collection(Constants.collectionUser).doc(Constants.idForMe).get().then((value) {
       print("Valueeeeeeeeeeeeee : ${value}");
       Constants.usersForMe = Users.fromJson(value.data()!);
       Constants.idForMe = value.id;
     }).catchError((error) {
-      //const SnackBarMe(color: Colors.red,text: 'no connection',);
+      //const SnackBar(color: Colors.red,text: 'no connection', content: null,);
     });
   }
 
@@ -134,12 +123,10 @@ class ChatCubit extends Cubit<ChatState> {
       if (ChatRemoteDatsSource.users.isNotEmpty) {
         getLastMessage();
       }
-      changeBool(enabledMessagesScreen);
-    }) /*.catchError((error){
-     print(error.toString());
-     emit(GetAllUsersErrorState());
-   })*/
-        ;
+    }).catchError((error) {
+      print(error.toString());
+      emit(GetAllUsersErrorState());
+    });
   }
 
   Future addMessage(Map<String, dynamic> json) async {
@@ -166,10 +153,11 @@ class ChatCubit extends Cubit<ChatState> {
         var events = event.docs;
         lastMessage[ChatRemoteDatsSource.users[i].id!] = [];
         for (var element in events) {
-          lastMessage[ChatRemoteDatsSource.users[i].id!]!
-              .add(Message(element.data()));
+          lastMessage[ChatRemoteDatsSource.users[i].id!]!.add(Message(element.data()));
         }
         emit(GetMessagesSuccessState());
+        changeBool(enabledMessagesScreen);
+
         needScroll = true;
       }).onError((error) {
         print(error.toString());
