@@ -97,7 +97,6 @@ class ChatCubit extends Cubit<ChatState> {
 
   Future getMyData() async {
     FirebaseFirestore.instance.collection(Constants.collectionUser).doc(Constants.idForMe).get().then((value) {
-      print("Valueeeeeeeeeeeeee : ${value}");
       Constants.usersForMe = Users.fromJson(value.data()!);
       Constants.idForMe = value.id;
     }).catchError((error) {
@@ -136,10 +135,12 @@ class ChatCubit extends Cubit<ChatState> {
     });
   }
 
+  /// success =1 for loading , 2 for success , 0 for no matches and 10 for error
+  int successMessages = 0;
   Map<String, List<Message>?> lastMessage = {};
   void getLastMessage() {
     emit(GetMessagesLoadingState());
-
+    successMessages = 1;
     for (int i = 0; i < ChatRemoteDatsSource.lengthUsers - 1; i++) {
       FirebaseFirestore.instance
           .collection('users')
@@ -150,16 +151,17 @@ class ChatCubit extends Cubit<ChatState> {
           .orderBy('createdAt')
           .snapshots()
           .listen((event) {
-        var events = event.docs;
         lastMessage[ChatRemoteDatsSource.users[i].id!] = [];
-        for (var element in events) {
+        for (var element in event.docs) {
           lastMessage[ChatRemoteDatsSource.users[i].id!]!.add(Message(element.data()));
         }
+        successMessages = event.docs.isNotEmpty ? 2 : 0;
         emit(GetMessagesSuccessState());
         changeBool(enabledMessagesScreen);
 
         needScroll = true;
       }).onError((error) {
+        successMessages = 10;
         print(error.toString());
       });
     }

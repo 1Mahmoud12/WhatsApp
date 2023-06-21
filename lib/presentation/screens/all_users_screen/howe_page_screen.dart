@@ -1,4 +1,3 @@
-import 'package:chat_first/core/utils/loading_screen.dart';
 import 'package:chat_first/presentation/cubit/block.dart';
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +8,7 @@ import 'package:hexcolor/hexcolor.dart';
 import '../../../core/snak_bar_me.dart';
 import '../../../core/utils/colors.dart';
 import '../../../core/utils/constants.dart';
+import '../../../core/utils/general_functions.dart';
 import '../../../core/utils/styles.dart';
 import '../../../data/data_source/remote_data_source.dart';
 import '../../cubit/states.dart';
@@ -87,7 +87,7 @@ class MessageScreen extends StatelessWidget {
       body: BlocBuilder<ChatCubit, ChatState>(
         builder: (context, state) {
           return ConditionalBuilder(
-            condition: ChatRemoteDatsSource.lastMessage != null,
+            condition: ChatCubit.get(context).successMessages == 2,
             builder: (context) {
               print(ChatRemoteDatsSource.lastMessage);
               return ListView.builder(
@@ -99,11 +99,9 @@ class MessageScreen extends StatelessWidget {
             },
             fallback: (context) {
               return ConditionalBuilder(
-                  condition: ChatRemoteDatsSource.lastMessage != null && state is! GetMessagesLoadingState,
-                  builder: (context) => LoadingScreen(enabled: ChatCubit.get(context).enabledMessagesScreen),
-                  fallback: (context) => const Center(
-                        child: Text('No Chats'),
-                      ));
+                  condition: ChatCubit.get(context).successMessages == 1,
+                  builder: (context) => indicator(),
+                  fallback: (context) => animatedText(text: 'No chats'));
             },
           );
         },

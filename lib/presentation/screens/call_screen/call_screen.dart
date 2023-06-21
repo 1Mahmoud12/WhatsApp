@@ -35,8 +35,14 @@ class CallScreen extends StatelessWidget {
 */
 
 import 'package:chat_first/core/utils/constants.dart';
+import 'package:chat_first/presentation/cubit/block.dart';
+import 'package:chat_first/presentation/cubit/states.dart';
 import 'package:chat_first/presentation/screens/call_screen/items_call_widget.dart';
+import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../core/utils/general_functions.dart';
 
 class VideoSDKQuickStart extends StatefulWidget {
   const VideoSDKQuickStart({Key? key}) : super(key: key);
@@ -52,14 +58,18 @@ class _VideoSDKQuickStartState extends State<VideoSDKQuickStart> {
       appBar: AppBar(
         title: const Text("Call"),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 0.0),
-        child: ListView.separated(
-            itemBuilder: (context, index) =>
-                ItemsCallWidget(model: Constants.called[index]),
-            separatorBuilder: (context, index) =>
-                const Divider(color: Colors.white, height: 3),
-            itemCount: Constants.called.length),
+      body: BlocBuilder<ChatCubit, ChatState>(
+        builder: (context, state) => ConditionalBuilder(
+          condition: false,
+          builder: (context) => Padding(
+            padding: const EdgeInsets.symmetric(vertical: 0.0),
+            child: ListView.separated(
+                itemBuilder: (context, index) => ItemsCallWidget(model: Constants.called[index]),
+                separatorBuilder: (context, index) => const Divider(color: Colors.white, height: 3),
+                itemCount: Constants.called.length),
+          ),
+          fallback: (context) => animatedText(text: 'No calls'),
+        ),
       ),
     );
   }

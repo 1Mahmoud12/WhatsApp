@@ -1,8 +1,10 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:chat_first/core/utils/styles.dart';
 import 'package:chat_first/domain/entities/model_calls.dart';
 import 'package:chat_first/domain/entities/model_user.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 
 import '../firebase/messaging.dart';
 import '../network/local.dart';
@@ -12,7 +14,6 @@ import 'constants.dart';
 
 String subStringForDate({required String date}) {
   String today = DateTime.now().toString().substring(5, 10);
-  String tomorrow = DateTime.now().add(const Duration(days: 1)).toString().substring(5, 10);
   String yasterday = DateTime.now().add(const Duration(days: -1)).toString().substring(5, 10);
 
   if (today == date.substring(5, 10)) {
@@ -115,7 +116,32 @@ Widget logo(widthMedia, model) {
   );
 }
 
+Widget indicator() {
+  return Center(
+    child: LottieBuilder.asset('assets/animation/Loading.json'),
+  );
+}
 
+Widget animatedText({required String text}) {
+  return Center(
+      child: DefaultTextStyle(
+    style: const TextStyle(
+      fontSize: 20.0,
+    ),
+    child: AnimatedTextKit(
+      animatedTexts: [
+        WavyAnimatedText(text),
+        WavyAnimatedText(
+          'Sorry Bro',
+        ),
+      ],
+      isRepeatingAnimation: true,
+      onTap: () {
+        print("Tap Event");
+      },
+    ),
+  ));
+}
 
 callFunction(context, Users model) async {
   String tokenMeeting = await createMeeting();
