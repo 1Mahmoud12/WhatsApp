@@ -118,7 +118,10 @@ Widget logo(widthMedia, model) {
 
 Widget indicator() {
   return Center(
-    child: LottieBuilder.asset('assets/animation/Loading.json'),
+    child: LottieBuilder.asset(
+      'assets/animation/Loading.json',
+      fit: BoxFit.cover,
+    ),
   );
 }
 

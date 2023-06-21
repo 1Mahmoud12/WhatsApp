@@ -35,8 +35,8 @@ class ChatCubit extends Cubit<ChatState> {
 
   List<Widget> screens = [
     const VideoSDKQuickStart(),
-    const MessageScreen(),
-    const MessageScreen(),
+    const AllUsersScreen(),
+    const AllUsersScreen(),
     Profile(firstTimeSign: false),
   ];
 
@@ -45,13 +45,19 @@ class ChatCubit extends Cubit<ChatState> {
     emit(BottomNavigationChangeState());
   }
 
-  List<Contact>? contacts;
+  List<Contact> contacts = [];
+  bool contactSuccess = false;
+
   Future<List<Contact>> getContact() async {
     if (await FlutterContacts.requestPermission()) {
-      contacts = await FlutterContacts.getContacts(withProperties: true, withPhoto: true);
+      await FlutterContacts.getContacts(withProperties: true, withPhoto: true).then((value) {
+        contacts = value;
+        contactSuccess = value.isNotEmpty;
+        emit(GetContactState());
+      });
     }
-    emit(GetContactState());
-    return contacts ?? [];
+
+    return contacts;
   }
 
   Future getImage() async {
@@ -139,31 +145,32 @@ class ChatCubit extends Cubit<ChatState> {
   int successMessages = 0;
   Map<String, List<Message>?> lastMessage = {};
   void getLastMessage() {
-    emit(GetMessagesLoadingState());
     successMessages = 1;
+    emit(GetMessagesLoadingState());
     for (int i = 0; i < ChatRemoteDatsSource.lengthUsers - 1; i++) {
       FirebaseFirestore.instance
-          .collection('users')
-          .doc(Constants.idForMe)
-          .collection(Constants.collectionChats)
-          .doc(ChatRemoteDatsSource.users[i].id)
-          .collection(Constants.collectionMessages)
-          .orderBy('createdAt')
-          .snapshots()
-          .listen((event) {
+              .collection('users')
+              .doc(Constants.idForMe)
+              .collection(Constants.collectionChats)
+              .doc(ChatRemoteDatsSource.users[i].id)
+              .collection(Constants.collectionMessages)
+              .orderBy('createdAt')
+              .snapshots()
+              .listen((event) {
         lastMessage[ChatRemoteDatsSource.users[i].id!] = [];
         for (var element in event.docs) {
           lastMessage[ChatRemoteDatsSource.users[i].id!]!.add(Message(element.data()));
         }
         successMessages = event.docs.isNotEmpty ? 2 : 0;
         emit(GetMessagesSuccessState());
-        changeBool(enabledMessagesScreen);
+        //changeBool(enabledMessagesScreen);
 
         needScroll = true;
-      }).onError((error) {
+      }) /*.((error) {
+    ScaffoldMessenger.of(context).showSnackBar(snackBarMe(color: Colors.red, text: 'no connection');
         successMessages = 10;
-        print(error.toString());
-      });
+      })*/
+          ;
     }
 
     /* await getLastMessageUseCase.call(receiveId).then((value)  {

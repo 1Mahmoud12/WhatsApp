@@ -24,7 +24,7 @@ class Users extends Equatable {
   });
 
   Users.fromJson(Map<String, dynamic> json) {
-    id = json['id'] ?? Constants.usersForMe!.id;
+    id = json['id'] ?? Constants.idForMe;
     name = json['name'] ?? Constants.usersForMe!.name;
     json['age'] != null ? age = json['age'] : '';
     json['tokenMessaging'] != null ? tokenMessaging = json['tokenMessaging'] : Constants.tokenMessaging;

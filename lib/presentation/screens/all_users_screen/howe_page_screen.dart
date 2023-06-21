@@ -12,56 +12,78 @@ import '../../../core/utils/general_functions.dart';
 import '../../../core/utils/styles.dart';
 import '../../../data/data_source/remote_data_source.dart';
 import '../../cubit/states.dart';
+import '../chat_screen/chat.dart';
 import 'widget_item_builder_home_page.dart';
 
-class MessageScreen extends StatelessWidget {
-  const MessageScreen({Key? key}) : super(key: key);
+class AllUsersScreen extends StatelessWidget {
+  const AllUsersScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    ChatCubit.get(context).getLastMessage();
+
     if (!Constants.connection) {
       Future.delayed(
         const Duration(milliseconds: 10),
         () => ScaffoldMessenger.of(context).showSnackBar(snackBarMe(color: Colors.red, text: 'no connection')),
       );
     }
-    List<Contact>? model = ChatCubit.get(context).contacts;
+
     return Scaffold(
       appBar: AppBar(
         leading: ElevatedButton(
           onPressed: () {
             ChatCubit.get(context).getContact();
             showModalBottomSheet(
-                context: context,
-                clipBehavior: Clip.hardEdge,
-                shape: RoundedRectangleBorder(
-                    side: BorderSide(color: HexColor(AppColors.lightColor)),
-                    borderRadius: const BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
-                backgroundColor: Colors.black,
-                builder: (context) => ListView.builder(
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          leading: model![index].photo == null
-                              ? const Icon(
-                                  Icons.person,
-                                  color: Colors.white,
-                                  size: 35,
-                                )
-                              : CircleAvatar(radius: 18, child: Image.memory(model[index].photo!)),
-                          title: Text(
-                            model[index].displayName,
-                            style: AppStyles.style16.copyWith(color: Colors.white),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          subtitle: Text(
-                            model[index].phones.isNotEmpty ? model[index].phones[0].number : 'no number',
-                            style: AppStyles.style15.copyWith(color: HexColor(AppColors.lightColor)),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        );
-                      },
-                      itemCount: ChatCubit.get(context).contacts!.length,
-                    ));
+              context: context,
+              clipBehavior: Clip.hardEdge,
+              shape: RoundedRectangleBorder(
+                  side: BorderSide(color: HexColor(AppColors.lightColor)),
+                  borderRadius: const BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+              backgroundColor: Colors.black,
+              builder: (context) => BlocBuilder<ChatCubit, ChatState>(builder: (context, state) {
+                List<Contact>? model = ChatCubit.get(context).contacts;
+                return ChatCubit.get(context).contacts.isNotEmpty
+                    ? ListView.builder(
+                        itemBuilder: (context, index) {
+                          return ListTile(
+                            onTap: () {
+                              for (int indexOfUsers = 0; indexOfUsers < ChatRemoteDatsSource.users.length; indexOfUsers++) {
+                                if (ChatRemoteDatsSource.users[indexOfUsers].phone == model[index].phones.first.number.replaceAll(' ', '')) {
+                                  Navigator.of(context).push(createRoute(
+                                      Chat(
+                                        modelUser: ChatRemoteDatsSource.users[indexOfUsers],
+                                        countInList: indexOfUsers,
+                                      ),
+                                      -1,
+                                      1));
+                                }
+                              }
+                            },
+                            leading: model[index].photo == null
+                                ? const Icon(
+                                    Icons.person,
+                                    color: Colors.white,
+                                    size: 35,
+                                  )
+                                : CircleAvatar(radius: 18, child: Image.memory(model[index].photo!)),
+                            title: Text(
+                              model[index].displayName,
+                              style: AppStyles.style16.copyWith(color: Colors.white),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            subtitle: Text(
+                              model[index].phones.isNotEmpty ? model[index].phones[0].number : 'no number',
+                              style: AppStyles.style15.copyWith(color: HexColor(AppColors.lightColor)),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          );
+                        },
+                        itemCount: ChatCubit.get(context).contacts.length,
+                      )
+                    : indicator();
+              }),
+            );
           },
           style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Colors.black)),
           child: Image.asset(
@@ -89,7 +111,6 @@ class MessageScreen extends StatelessWidget {
           return ConditionalBuilder(
             condition: ChatCubit.get(context).successMessages == 2,
             builder: (context) {
-              print(ChatRemoteDatsSource.lastMessage);
               return ListView.builder(
                 itemBuilder: (context, index) {
                   return ItemBuilderHomePage(indexOfUsers: index);

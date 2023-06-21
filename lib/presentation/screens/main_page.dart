@@ -34,7 +34,6 @@ class MainPage extends StatelessWidget {
           ChatCubit.get(context).createTokenMessaging = ChatCubit.get(context).changeBool(false);
         }
         if (Constants.newMessageOnBackground) {
-          print('/*////////////////////////////////////////////');
           Messaging.firebaseMessagingBackgroundHandler(context, Constants.newMessage!);
           ChatCubit.get(context).changeBool(Constants.newMessageOnBackground);
         }
@@ -47,13 +46,10 @@ class MainPage extends StatelessWidget {
             currentIndex: ChatCubit.get(context).currentState,
             onTap: (index) async {
               /// to change bottom navigation bar
+              print(index);
               ChatCubit.get(context).changeIndex(index);
-              if (index == 2) {
-                ChatCubit.get(context).getLastMessage();
-                ChatCubit.get(context).changeBool(ChatCubit.get(context).enabledMessagesScreen);
-                //ChatCubit.get(context).getAllUsers();
-              }
-              if (index == 1) {
+
+              if (ChatCubit.get(context).currentState == 1) {
                 await availableCameras().then(
                   (value) => Navigator.push(context, MaterialPageRoute(builder: (_) => CameraPage(cameras: value))),
                 );

@@ -35,8 +35,7 @@ class Chat extends StatelessWidget {
         const Duration(milliseconds: 100),
         () => scroll.jumpTo(scroll.position.maxScrollExtent),
       );
-      ChatCubit.get(context).needScroll =
-          ChatCubit.get(context).changeBool(true);
+      ChatCubit.get(context).needScroll = ChatCubit.get(context).changeBool(true);
     }
 
     double heightMedia = MediaQuery.of(context).size.height;
@@ -44,8 +43,7 @@ class Chat extends StatelessWidget {
       appBar: AppBar(
         leading: IconButton(
             onPressed: () {
-              ChatCubit.get(context).needScroll =
-                  ChatCubit.get(context).changeBool(false);
+              ChatCubit.get(context).needScroll = ChatCubit.get(context).changeBool(false);
               context.push('/');
             },
             icon: const Icon(Icons.arrow_back_ios)),
@@ -80,18 +78,14 @@ class Chat extends StatelessWidget {
                 padding: EdgeInsets.only(bottom: heightMedia * .08),
                 child: InkWell(
                   onTap: () async {
-                    await SystemChannels.textInput
-                        .invokeMethod("TextInput.hide");
+                    await SystemChannels.textInput.invokeMethod("TextInput.hide");
 
-                    ChatCubit.get(context).changeEmojiShow =
-                        ChatCubit.get(context).changeBool(true);
+                    ChatCubit.get(context).changeEmojiShow = ChatCubit.get(context).changeBool(true);
                     SendMessage.controller.clear();
                   },
                   child: ListView(
                     controller: scroll,
-                    children: ChatCubit.get(context)
-                        .lastMessage[modelUser.id]!
-                        .map((Message message) {
+                    children: ChatCubit.get(context).lastMessage[modelUser.id]!.map((Message message) {
                       return MessagesWidget(message: message);
                     }).toList(),
                   ),
@@ -105,8 +99,7 @@ class Chat extends StatelessWidget {
           ),
           onWillPop: () async {
             if (ChatCubit.get(context).changeEmojiShow) {
-              ChatCubit.get(context).changeEmojiShow =
-                  ChatCubit.get(context).changeBool(true);
+              ChatCubit.get(context).changeEmojiShow = ChatCubit.get(context).changeBool(true);
             } else {
               await SystemChannels.textInput.invokeMethod("TextInput.hide");
             }
