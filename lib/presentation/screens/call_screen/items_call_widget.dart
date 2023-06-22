@@ -14,23 +14,30 @@ class ItemsCallWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Users? modelUser;
+
     for (int i = 0; i < ChatRemoteDatsSource.users.length; i++) {
       if (model.receiveId == ChatRemoteDatsSource.users[i].id) {
         modelUser = ChatRemoteDatsSource.users[i];
       }
+      if (modelUser == null) {
+        for (var element in ChatRemoteDatsSource.users) {
+          if (model.sendId == element.id) modelUser = element;
+        }
+      }
     }
+    //print(modelUser);
     return Padding(
       padding: const EdgeInsets.only(top: 10),
       child: InkWell(
         onTap: () => callFunction(context, modelUser!),
         child: ListTile(
-          leading: model.image!.length < 20
+          leading: model.image.length < 20
               ? Image.asset(
-                  model.image!,
+                  model.image,
                   width: 50,
                   height: 50,
                 )
-              : Image.network(model.image!),
+              : Image.network(model.image),
           title: Row(
             children: [
               Text(
@@ -47,7 +54,7 @@ class ItemsCallWidget extends StatelessWidget {
           ),
           subtitle: Row(
             children: [
-              Text(model.status ?? ''),
+              Text(model.status),
               const Spacer(),
               model.status == 'called'
                   ? const Icon(

@@ -2,46 +2,45 @@ import 'package:equatable/equatable.dart';
 
 import '../../core/utils/constants.dart';
 
-// ignore: must_be_immutable
 class Users extends Equatable {
-  String? id;
-  String? tokenMessaging;
-  String? name;
-  String? age;
-  String? image;
-  String? phone;
-  String? lastSeen;
+  final String id;
+  final String tokenMessaging;
+  final String name;
+  final String age;
+  final String image;
+  final String phone;
+  final String lastSeen;
 
   /// when i change data of user i change data for user open app only
-  Users({
-    this.id,
-    this.name,
-    this.age,
-    this.tokenMessaging,
+  const Users({
+    required this.id,
+    required this.name,
+    required this.age,
+    required this.tokenMessaging,
     required this.phone,
-    this.image,
-    this.lastSeen,
+    required this.image,
+    required this.lastSeen,
   });
 
-  Users.fromJson(Map<String, dynamic> json) {
-    id = json['id'] ?? Constants.idForMe;
-    name = json['name'] ?? Constants.usersForMe!.name;
-    json['age'] != null ? age = json['age'] : '';
-    json['tokenMessaging'] != null ? tokenMessaging = json['tokenMessaging'] : Constants.tokenMessaging;
-    phone = json['phone'];
-    json['image'] != null ? image = json['image'] : "assets/person.png";
-    json['lastSeen'] != null ? lastSeen = json['lastSeen'] : '';
-  }
+  factory Users.fromJson(Map<String, dynamic> json) => Users(
+        id: json['id'] ?? Constants.idForMe,
+        name: json['name'] ?? Constants.usersForMe!.name,
+        age: json['age'] ?? '',
+        tokenMessaging: json['tokenMessaging'] ?? Constants.tokenMessaging,
+        phone: json['phone'] ?? Constants.usersForMe!.phone,
+        image: json['image'] ?? "assets/person.png",
+        lastSeen: json['lastSeen'] ?? '',
+      );
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id ?? Constants.idForMe,
-      'name': name ?? Constants.usersForMe!.name,
-      'age': age ?? Constants.usersForMe!.age,
-      'image': image ?? "assets/person.png",
-      'phone': phone ?? Constants.usersForMe!.phone,
-      'tokenMessaging': tokenMessaging ?? Constants.tokenMessaging,
-      'lastSeen': lastSeen ?? Constants.usersForMe!.lastSeen ?? '',
+      'id': id,
+      'name': name,
+      'age': age,
+      'image': image,
+      'phone': phone,
+      'tokenMessaging': tokenMessaging,
+      'lastSeen': lastSeen,
     };
   }
 

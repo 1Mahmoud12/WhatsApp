@@ -4,6 +4,7 @@ class Calls extends Equatable {
   final String name;
   final String status;
   final String receiveId;
+  final String sendId;
   final String image;
   final String dateTime;
   final DateTime createdAt;
@@ -11,6 +12,7 @@ class Calls extends Equatable {
     required this.name,
     required this.status,
     required this.receiveId,
+    required this.sendId,
     required this.image,
     required this.dateTime,
     required this.createdAt,
@@ -21,6 +23,7 @@ class Calls extends Equatable {
       name: json['name'] ?? '',
       status: json['status'] ?? '',
       receiveId: json['receiveId'],
+      sendId: json['sendId'],
       image: json['image'] ?? '',
       dateTime: json['dateTime'] ?? '',
       createdAt: json['createdAt'] ?? DateTime.now(),
@@ -28,10 +31,6 @@ class Calls extends Equatable {
       // createdAt=json['createdAt'];
     );
   }
-
-/*  Map<String, dynamic> toMap() {
-    return {'name': name, 'status': status, 'receiveId': receiveId, 'image': image ?? '', 'dateTime': dateTime, 'createdAt': createdAt};
-  }*/
 
   @override
   List<Object?> get props => [name, status, receiveId, image, dateTime, createdAt];

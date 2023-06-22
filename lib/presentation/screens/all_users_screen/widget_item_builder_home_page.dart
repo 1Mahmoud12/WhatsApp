@@ -15,8 +15,7 @@ import '../chat_screen/chat.dart';
 
 class ItemBuilderHomePage extends StatelessWidget {
   final int indexOfUsers;
-  const ItemBuilderHomePage({Key? key, required this.indexOfUsers})
-      : super(key: key);
+  const ItemBuilderHomePage({Key? key, required this.indexOfUsers}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -28,9 +27,7 @@ class ItemBuilderHomePage extends StatelessWidget {
       builder: (context, state) {
         // print(model.id);
         return ConditionalBuilder(
-          condition: ChatRemoteDatsSource.lengthUsers - 1 ==
-                  ChatRemoteDatsSource.users.length &&
-              ChatCubit.get(context).lastMessage.isNotEmpty,
+          condition: ChatRemoteDatsSource.lengthUsers - 1 == ChatRemoteDatsSource.users.length && ChatCubit.get(context).lastMessage.isNotEmpty,
           builder: (context) => ListTile(
             dense: true,
             leading: Stack(
@@ -39,7 +36,7 @@ class ItemBuilderHomePage extends StatelessWidget {
                 CircleAvatar(
                   radius: widthMedia * .05,
                   backgroundColor: Colors.black45,
-                  child: model.image != 'assets/img.png' || model.image != null
+                  child: model.image != 'assets/img.png'
                       ? Image.asset(
                           'assets/person.png',
                           width: widthMedia * .5,
@@ -68,18 +65,14 @@ class ItemBuilderHomePage extends StatelessWidget {
                 SizedBox(
                     width: widthMedia * .35,
                     child: Text(
-                      model.name!,
+                      model.name,
                       style: AppStyles.style16.copyWith(color: Colors.white),
                       overflow: TextOverflow.ellipsis,
                     )),
                 const Spacer(),
                 Text(
                   ChatCubit.get(context).lastMessage[model.id] != null
-                      ? subStringForTime(
-                          time: ChatCubit.get(context)
-                              .lastMessage[model.id]!
-                              .last
-                              .dateTime)
+                      ? subStringForTime(time: ChatCubit.get(context).lastMessage[model.id]!.last.dateTime)
                       : " ",
                   style: AppStyles.style15.copyWith(color: Colors.white),
                 ),
@@ -91,14 +84,8 @@ class ItemBuilderHomePage extends StatelessWidget {
                 SizedBox(
                     width: widthMedia * .6,
                     child: Text(
-                      ChatCubit.get(context).lastMessage[model.id] != null
-                          ? ChatCubit.get(context)
-                              .lastMessage[model.id]!
-                              .last
-                              .text
-                          : "say 👋",
-                      style: AppStyles.style15
-                          .copyWith(color: HexColor(AppColors.lightColor)),
+                      ChatCubit.get(context).lastMessage[model.id] != null ? ChatCubit.get(context).lastMessage[model.id]!.last.text : "say 👋",
+                      style: AppStyles.style15.copyWith(color: HexColor(AppColors.lightColor)),
                       overflow: TextOverflow.ellipsis,
                     )),
                 const Spacer(),

@@ -2,7 +2,6 @@ import 'package:chat_first/core/network/local.dart';
 import 'package:chat_first/core/utils/colors.dart';
 import 'package:chat_first/core/utils/general_functions.dart';
 import 'package:chat_first/core/utils/styles.dart';
-import 'package:chat_first/domain/entities/model_user.dart';
 import 'package:chat_first/presentation/screens/profile_screen/profile.dart';
 import 'package:chat_first/presentation/screens/sign_in/sign_cubit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -11,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 
 import '../../../../core/utils/constants.dart';
+import '../../../../domain/entities/model_user.dart';
 
 class SignIn extends StatelessWidget {
   final TextEditingController smsController = TextEditingController();
@@ -42,9 +42,9 @@ class SignIn extends StatelessWidget {
                 children: [
                   TextButton(
                       onPressed: () async {
-                        Constants.usersForMe = Users(
-                          phone: phoneController.text,
-                        );
+                        Constants.usersForMe = Users.fromJson({
+                          "phone": phoneController.text,
+                        });
                         FirebaseAuth auth = FirebaseAuth.instance;
 
                         await auth.verifyPhoneNumber(
@@ -80,9 +80,12 @@ class SignIn extends StatelessWidget {
                                                   auth.signInWithCredential(credential).then((value) async {
                                                     SharedPreference.putDataString('id', value.user!.uid);
 
-                                                    Constants.usersForMe?.id = value.user!.uid;
-                                                    Constants.usersForMe?.phone = phoneController.text;
-                                                    //Constants.idForMe = value.user!.uid;
+                                                    /*Constants.usersForMe?.id = value.user!.uid;
+                                                    Constants.usersForMe?.phone = phoneController.text;*/
+                                                    Users.fromJson({
+                                                      'id': value.user!.uid,
+                                                      'phone': phoneController.text,
+                                                    });
 
                                                     Constants.tokenMessaging = await FirebaseMessaging.instance.getToken() ?? '';
                                                     SignCubit.get(context).addUser({
@@ -101,8 +104,13 @@ class SignIn extends StatelessWidget {
                             auth.signInWithCredential(credential).then((value) async {
                               SharedPreference.putDataString('id', value.user!.uid);
 
-                              Constants.usersForMe?.id = value.user!.uid;
-                              Constants.usersForMe?.phone = phoneController.text;
+                              /*Constants.usersForMe?.id = value.user!.uid;
+                              Constants.usersForMe?.phone = phoneController.text;*/
+
+                              Users.fromJson({
+                                'id': value.user!.uid,
+                                'phone': phoneController.text,
+                              });
 
                               Constants.tokenMessaging = await FirebaseMessaging.instance.getToken() ?? '';
                               SignCubit.get(context).addUser({

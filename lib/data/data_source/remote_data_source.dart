@@ -53,13 +53,17 @@ class ChatRemoteDatsSource extends ChatRemoteDatsSourceRepository {
 
   @override
   Future createMessageChatsRemoteDataSource(Map<String, dynamic> json) async {
-    await fireStoreUsers.doc(json['sendId']).collection('chats').doc(json['receiveId']).collection('messages').add(json);
-    await FirebaseFirestore.instance
-        .collection('users')
-        .doc(json['receiveId'])
-        .collection('chats')
+    await fireStoreUsers
         .doc(json['sendId'])
-        .collection('messages')
+        .collection(Constants.collectionChats)
+        .doc(json['receiveId'])
+        .collection(Constants.collectionMessages)
+        .add(json);
+    await fireStoreUsers
+        .doc(json['receiveId'])
+        .collection(Constants.collectionChats)
+        .doc(json['sendId'])
+        .collection(Constants.collectionMessages)
         .add(json);
     //getChatsRemoteDataSource(json['receiveId']);
   }
@@ -76,11 +80,10 @@ class ChatRemoteDatsSource extends ChatRemoteDatsSourceRepository {
         .listen((event) {
       Constants.modelOfChats = [];
       for (var element in event.docs) {
-        Constants.modelOfChats.add(Message(element.data()));
+        Constants.modelOfChats.add(Message.fromJson(element.data()));
       }
     });
 
-    /* print(model);*/
     return Constants.modelOfChats;
   }
 
@@ -96,7 +99,7 @@ class ChatRemoteDatsSource extends ChatRemoteDatsSourceRepository {
         .orderBy('createdAt')
         .get()
         .then((value) {
-      lastMessage = Message(value.docs.last.data());
+      lastMessage = Message.fromJson(value.docs.last.data());
     });
 
     return lastMessage!;
@@ -117,8 +120,7 @@ class ChatRemoteDatsSource extends ChatRemoteDatsSourceRepository {
 
   @override
   Future<void> addCalls(Map<String, dynamic> json) async {
-    await fireStoreUsers.doc(Constants.idForMe).collection(Constants.collectionCalls).add(json);
-    await fireStoreUsers.doc(json['receiveId']).collection(Constants.collectionCalls).add(json);
-    //getChatsRemoteDataSource(json['receiveId']);
+    await fireStoreUsers.doc(json['sendId']).collection(Constants.collectionCalls).add(json);
+    //await fireStoreUsers.doc(json["receiveId"]).collection(Constants.collectionCalls).add(json);
   }
 }

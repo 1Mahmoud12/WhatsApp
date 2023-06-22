@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:chat_first/core/utils/styles.dart';
-import 'package:chat_first/domain/entities/model_calls.dart';
 import 'package:chat_first/domain/entities/model_user.dart';
 import 'package:chat_first/presentation/cubit/block.dart';
 import 'package:flutter/material.dart';
@@ -143,8 +142,9 @@ Widget animatedText({required String text}) {
         ),
       ],
       isRepeatingAnimation: true,
+      repeatForever: true,
       onTap: () {
-        print("Tap Event");
+        //print("Tap Event");
       },
     ),
   ));
@@ -155,21 +155,23 @@ callFunction(context, Users model) async {
   Messaging.sendMessage(context,
       modelUser: Constants.usersForMe!,
       body: 'Calling...',
-      title: model.name!,
+      title: model.name,
       action: "calling",
       tokenMeeting: tokenMeeting,
-      tokenUser: model.tokenMessaging!);
+      tokenUser: model.tokenMessaging);
 
-  Constants.called.add(Calls.fromJson({
-    "name": model.name,
-    "receiveId": model.id,
-    "image": model.image,
-    'status': 'called',
-    "dateTime": DateTime.now().toString(),
-  }));
   ChatCubit.get(context).addCalls({
     "name": model.name,
     "receiveId": model.id,
+    "sendId": Constants.idForMe,
+    "image": model.image,
+    'status': 'called',
+    "dateTime": DateTime.now().toString(),
+  });
+  ChatCubit.get(context).addCalls({
+    "name": model.name,
+    "receiveId": Constants.idForMe,
+    "sendId": model.id,
     "image": model.image,
     'status': 'called',
     "dateTime": DateTime.now().toString(),
@@ -177,7 +179,7 @@ callFunction(context, Users model) async {
   navigatorReuse(
       context,
       MeetingScreen(
-        namePerson: model.name!,
+        namePerson: model.name,
         token: tokenVideo,
         meetingId: tokenMeeting,
         leaveMeeting: () => Navigator.pop(context),

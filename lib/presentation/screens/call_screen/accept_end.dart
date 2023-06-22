@@ -13,12 +13,7 @@ class AcceptEnd extends StatelessWidget {
   final Users user;
   final bool contactRecipient;
   final String tokenMeeting;
-  const AcceptEnd(
-      {Key? key,
-      required this.user,
-      required this.contactRecipient,
-      required this.tokenMeeting})
-      : super(key: key);
+  const AcceptEnd({Key? key, required this.user, required this.contactRecipient, required this.tokenMeeting}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,8 +22,7 @@ class AcceptEnd extends StatelessWidget {
       const Duration(seconds: 10),
       () {
         Navigator.pop(context);
-        ScaffoldMessenger.of(context)
-            .showSnackBar(snackBarMe(color: Colors.red, text: 'Call Ended'));
+        ScaffoldMessenger.of(context).showSnackBar(snackBarMe(color: Colors.red, text: 'Call Ended'));
       },
     );
     return Scaffold(
@@ -49,18 +43,15 @@ class AcceptEnd extends StatelessWidget {
                                 CircleAvatar(
                                   radius: 30,
                                   backgroundColor: Colors.black,
-                                  child: user.image == "assets/person.png"
-                                      ? Image.asset("assets/person.png")
-                                      : Image.network(user.image!),
+                                  child: user.image == "assets/person.png" ? Image.asset("assets/person.png") : Image.network(user.image),
                                 ),
-                                Text(user.name!),
+                                Text(user.name),
                                 SizedBox(
                                   height: heightMedia * .02,
                                 ),
                                 Text(
                                   'calling…',
-                                  style: AppStyles.style15.copyWith(
-                                      color: HexColor(AppColors.lightColor)),
+                                  style: AppStyles.style15.copyWith(color: HexColor(AppColors.lightColor)),
                                 ),
                               ],
                             )),
@@ -69,11 +60,9 @@ class AcceptEnd extends StatelessWidget {
                   : Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        user.image == "assets/person.png"
-                            ? Image.asset("assets/person.png")
-                            : Image.network(user.image!),
+                        user.image == "assets/person.png" ? Image.asset("assets/person.png") : Image.network(user.image),
                         SizedBox(height: heightMedia * .05),
-                        Text(user.name!),
+                        Text(user.name),
                         SizedBox(
                           height: heightMedia * .02,
                         ),
@@ -83,8 +72,7 @@ class AcceptEnd extends StatelessWidget {
                               children: [
                                 Text(
                                   "Waiting",
-                                  style: AppStyles.style16.copyWith(
-                                      color: HexColor(AppColors.boldColor)),
+                                  style: AppStyles.style16.copyWith(color: HexColor(AppColors.boldColor)),
                                 ),
                               ],
                             )),
@@ -103,15 +91,13 @@ class AcceptEnd extends StatelessWidget {
                           navigatorReuse(
                               context,
                               MeetingScreen(
-                                namePerson: user.name!,
+                                namePerson: user.name,
                                 token: tokenVideo,
                                 meetingId: tokenMeeting,
                                 leaveMeeting: () => Navigator.pop(context),
                               ));
                         },
-                        style: const ButtonStyle(
-                            backgroundColor: MaterialStatePropertyAll(
-                                Color.fromRGBO(10, 10, 10, 0))),
+                        style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Color.fromRGBO(10, 10, 10, 0))),
                         child: CircleAvatar(
                             radius: 30,
                             backgroundColor: HexColor('#2B2B2B'),
@@ -125,9 +111,7 @@ class AcceptEnd extends StatelessWidget {
                         onPressed: () {
                           Navigator.pop(context);
                         },
-                        style: const ButtonStyle(
-                            backgroundColor: MaterialStatePropertyAll(
-                                Color.fromRGBO(10, 10, 10, 0))),
+                        style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Color.fromRGBO(10, 10, 10, 0))),
                         child: CircleAvatar(
                             radius: 30,
                             backgroundColor: HexColor('#2B2B2B'),
@@ -139,7 +123,7 @@ class AcceptEnd extends StatelessWidget {
                 ],
               ),
             ),
-          if (!contactRecipient) Expanded(child: Column())
+          if (!contactRecipient) const Expanded(child: Column())
         ],
       ),
     );

@@ -43,8 +43,7 @@ class SendMessage extends StatelessWidget {
                   flex: 4,
                   child: SizedBox(
                     width: widthMedia * 59,
-                    child:
-                        TextFieldMessage(receiveId: receiveId, scroll: scroll),
+                    child: TextFieldMessage(receiveId: receiveId, scroll: scroll),
                   ),
                 ),
                 const Spacer(),
@@ -54,8 +53,7 @@ class SendMessage extends StatelessWidget {
                   IconButton(
                       onPressed: () async {
                         await availableCameras().then(
-                          (value) => Navigator.push(context,
-                              MaterialPageRoute(builder: (_) {
+                          (value) => Navigator.push(context, MaterialPageRoute(builder: (_) {
                             return CameraPage(
                               cameras: value,
                               receiveId: receiveId,
@@ -81,19 +79,15 @@ class SendMessage extends StatelessWidget {
                         await showDialog(
                             context: context,
                             builder: (context) => SimpleDialog(
-                                  shape: const ContinuousRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(35))),
-                                  insetPadding: EdgeInsets.only(
-                                      top: heightMedia * .7,
-                                      left: widthMedia * .3),
+                                  shape: const ContinuousRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(35))),
+                                  insetPadding: EdgeInsets.only(top: heightMedia * .7, left: widthMedia * .3),
                                   backgroundColor: Colors.grey,
                                   children: [
                                     Recorder(receiveId: receiveId),
                                   ],
                                 )).whenComplete(() {
                           if (Constants.audio != '') {
-                            ChatCubit.get(context).addMessage(Message({
+                            ChatCubit.get(context).addMessage(Message.fromJson({
                               'sendId': Constants.idForMe,
                               'receiveId': receiveId,
                               'audio': Constants.audio,
@@ -116,7 +110,7 @@ class SendMessage extends StatelessWidget {
                       onPressed: () async {
                         print("update : ${controller.text}");
                         ChatCubit.get(context)
-                            .addMessage(Message({
+                            .addMessage(Message.fromJson({
                           'sendId': Constants.idForMe,
                           'receiveId': receiveId,
                           'text': controller.text,
@@ -126,12 +120,10 @@ class SendMessage extends StatelessWidget {
                             .whenComplete(() {
                           Future.delayed(
                             const Duration(milliseconds: 100),
-                            () =>
-                                scroll.jumpTo(scroll.position.maxScrollExtent),
+                            () => scroll.jumpTo(scroll.position.maxScrollExtent),
                           );
                         });
-                        ChatCubit.get(context).changeEmojiShow =
-                            ChatCubit.get(context).changeBool(true);
+                        ChatCubit.get(context).changeEmojiShow = ChatCubit.get(context).changeBool(true);
                         SystemChannels.textInput.invokeMethod("TextInput.hide");
 
                         controller.clear();

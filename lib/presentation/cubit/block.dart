@@ -80,7 +80,7 @@ class ChatCubit extends Cubit<ChatState> {
         .then((p0) {
       p0.ref.getDownloadURL().then((value) {
         emit(GetImageSuccessState());
-        Constants.usersForMe!.image = value;
+
         addUser({
           'id': Constants.usersForMe!.id,
           'name': Constants.usersForMe!.name,
@@ -113,9 +113,7 @@ class ChatCubit extends Cubit<ChatState> {
     FirebaseFirestore.instance.collection(Constants.collectionUser).doc(Constants.idForMe).get().then((value) {
       Constants.usersForMe = Users.fromJson(value.data()!);
       Constants.idForMe = value.id;
-    }).catchError((error) {
-      //const SnackBar(color: Colors.red,text: 'no connection', content: null,);
-    });
+    }).catchError((error) {});
   }
 
   bool enabledMessagesScreen = false;
@@ -166,15 +164,14 @@ class ChatCubit extends Cubit<ChatState> {
               .orderBy('createdAt')
               .snapshots()
               .listen((event) {
-        lastMessage[ChatRemoteDatsSource.users[i].id!] = [];
+        lastMessage[ChatRemoteDatsSource.users[i].id] = [];
         for (var element in event.docs) {
-          lastMessage[ChatRemoteDatsSource.users[i].id!]!.add(Message(element.data()));
+          lastMessage[ChatRemoteDatsSource.users[i].id]!.add(Message.fromJson(element.data()));
           storeMessages.add(jsonEncode(element.data().toString()));
         }
         successMessages = event.docs.isNotEmpty ? 2 : 0;
         emit(GetMessagesSuccessState());
         SharedPreference.putDataStringListModel('messages', storeMessages);
-        print(storeMessages);
 
         needScroll = true;
       }) /*.((error) {
@@ -199,13 +196,6 @@ class ChatCubit extends Cubit<ChatState> {
       callsInformation = value;
       emit(GetCallsSuccessState());
     });
-
-    /* FirebaseFirestore.instance.collection(Constants.collectionUser).doc(Constants.idForMe).collection(Constants.collectionCalls).get().then((value) {
-      value.docs.forEach((element) {
-        callsInformation.add(Calls(element.data()));
-      });
-      emit(GetCallsSuccessState());
-    });*/
   }
 
   void addCalls(Map<String, dynamic> json) {

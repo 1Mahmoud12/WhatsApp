@@ -11,9 +11,7 @@ class TextFieldMessage extends StatefulWidget {
   final String receiveId;
   final ScrollController scroll;
 
-  const TextFieldMessage(
-      {Key? key, required this.receiveId, required this.scroll})
-      : super(key: key);
+  const TextFieldMessage({Key? key, required this.receiveId, required this.scroll}) : super(key: key);
   static String? copyTextController;
 
   @override
@@ -46,9 +44,7 @@ class _TextFieldMessageState extends State<TextFieldMessage> {
       /// when maxLines == null the text go to new line when fill that line
       maxLines: null,
       decoration: InputDecoration(
-          hintText: SendMessage.controller.text == ''
-              ? 'Type your message'
-              : SendMessage.controller.text,
+          hintText: SendMessage.controller.text == '' ? 'Type your message' : SendMessage.controller.text,
           hintStyle: AppStyles.style15.copyWith(color: Colors.white),
           border: InputBorder.none,
           prefixIcon: IconButton(
@@ -56,23 +52,18 @@ class _TextFieldMessageState extends State<TextFieldMessage> {
                 focus.unfocus();
                 focus.canRequestFocus = false;
                 SystemChannels.textInput.invokeMethod("TextInput.hide");
-                TextFieldMessage.copyTextController =
-                    SendMessage.controller.text;
-                ChatCubit.get(context).changeEmojiShow = ChatCubit.get(context)
-                    .changeBool(ChatCubit.get(context).changeEmojiShow);
+                TextFieldMessage.copyTextController = SendMessage.controller.text;
+                ChatCubit.get(context).changeEmojiShow = ChatCubit.get(context).changeBool(ChatCubit.get(context).changeEmojiShow);
               },
               icon: const Icon(
                 Icons.emoji_emotions_outlined,
                 color: Colors.white,
               ))),
-      style: Theme.of(context)
-          .textTheme
-          .bodyMedium!
-          .copyWith(fontSize: 20, color: Colors.white),
+      style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 20, color: Colors.white),
       onSubmitted: (value) {
         if (value.isNotEmpty && value != " ") {
           ChatCubit.get(context)
-              .addMessage(Message({
+              .addMessage(Message.fromJson({
             'sendId': Constants.idForMe,
             'receiveId': widget.receiveId,
             'text': SendMessage.controller.text,
@@ -82,8 +73,7 @@ class _TextFieldMessageState extends State<TextFieldMessage> {
               .whenComplete(() {
             Future.delayed(
               const Duration(milliseconds: 100),
-              () =>
-                  widget.scroll.jumpTo(widget.scroll.position.maxScrollExtent),
+              () => widget.scroll.jumpTo(widget.scroll.position.maxScrollExtent),
             );
           });
         }

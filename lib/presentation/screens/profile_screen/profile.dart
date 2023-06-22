@@ -2,6 +2,7 @@ import 'package:chat_first/core/network/local.dart';
 import 'package:chat_first/core/utils/colors.dart';
 import 'package:chat_first/core/utils/general_functions.dart';
 import 'package:chat_first/core/utils/styles.dart';
+import 'package:chat_first/domain/entities/model_user.dart';
 import 'package:chat_first/presentation/cubit/block.dart';
 import 'package:chat_first/presentation/cubit/states.dart';
 import 'package:chat_first/presentation/screens/main_page.dart';
@@ -37,7 +38,8 @@ class Profile extends StatelessWidget {
               FirebaseAuth.instance.signOut();
               FirebaseAuth.instance.currentUser!.delete().then((value) => print("Successful"));
               FirebaseFirestore.instance.collection('users').doc(Constants.usersForMe!.id).delete();
-              Constants.usersForMe!.id = null;
+              //Constants.usersForMe!.id = null;
+              Users.fromJson({'id': null});
 
               await SharedPreference.putDataString('id', '');
 
@@ -100,9 +102,15 @@ class Profile extends StatelessWidget {
                           color: Colors.blue,
                         ))),
                     onPressed: () async {
-                      Constants.usersForMe!.name = nameController.text;
+                      /*  Constants.usersForMe!.name = nameController.text;
                       Constants.usersForMe!.phone = phoneController.text;
-                      Constants.usersForMe!.age = ageController.text;
+                      Constants.usersForMe!.age = ageController.text;*/
+
+                      Users.fromJson({
+                        "name": nameController.text,
+                        "phone": phoneController.text,
+                        "age": ageController.text,
+                      });
 
                       print("SSSSSSSSSSS : ${Constants.usersForMe!.name}");
                       firstTimeSign ? navigatorReuse(context, const MainPage()) : null;
@@ -131,7 +139,7 @@ class Profile extends StatelessWidget {
     required double widthMedia,
     required double heightMedia,
   }) {
-    return Constants.usersForMe!.image == 'assets/person.png' || Constants.usersForMe!.image == null
+    return Constants.usersForMe!.image == 'assets/person.png'
         ? Image.asset(
             'assets/person.png',
             width: widthMedia * .4,
@@ -140,7 +148,7 @@ class Profile extends StatelessWidget {
         : CircleAvatar(
             radius: 70,
             backgroundImage: NetworkImage(
-              Constants.usersForMe!.image!,
+              Constants.usersForMe!.image,
             ),
           );
   }
