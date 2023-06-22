@@ -1,5 +1,3 @@
-import 'package:chat_first/core/firebase/messaging.dart';
-
 abstract class ChatState {}
 
 class InitialState extends ChatState {}
@@ -44,6 +42,20 @@ class GetMessagesSuccessState extends ChatState {}
 class GetMessagesErrorState extends ChatState {}
 
 class GetMessagesLoadingState extends ChatState {}
+
+/// Get Calls
+class GetCallsSuccessState extends ChatState {}
+
+class GetCallsErrorState extends ChatState {}
+
+class GetCallsLoadingState extends ChatState {}
+
+/// Add Calls
+class AddCallsSuccessState extends ChatState {}
+
+class AddCallsErrorState extends ChatState {}
+
+class AddCallsLoadingState extends ChatState {}
 
 /// Get Last Message
 class GetLastMessagesState extends ChatState {}

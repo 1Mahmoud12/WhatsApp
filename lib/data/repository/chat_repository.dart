@@ -1,4 +1,5 @@
 import 'package:chat_first/data/data_source/remote_data_source.dart';
+import 'package:chat_first/domain/entities/model_calls.dart';
 import 'package:chat_first/domain/entities/model_user.dart';
 
 import '../../domain/entities/model_message.dart';
@@ -26,13 +27,21 @@ class ChatRepository implements ChatRepositoryDomain {
 
   @override
   Future<List<Message>> getChats(String receiveId) async {
-    return await chatRemoteDatsSourceRepository
-        .getChatsRemoteDataSource(receiveId);
+    return await chatRemoteDatsSourceRepository.getChatsRemoteDataSource(receiveId);
   }
 
   @override
   Future<Message> lastMessage(String receiveId) async {
-    return await chatRemoteDatsSourceRepository
-        .lastMessageRemoteDataSource(receiveId);
+    return await chatRemoteDatsSourceRepository.lastMessageRemoteDataSource(receiveId);
+  }
+
+  @override
+  Future<List<Calls>> getCalls() async {
+    return await chatRemoteDatsSourceRepository.getCalls();
+  }
+
+  @override
+  Future<void> addCalls(Map<String, dynamic> json) async {
+    return await chatRemoteDatsSourceRepository.addCalls(json);
   }
 }

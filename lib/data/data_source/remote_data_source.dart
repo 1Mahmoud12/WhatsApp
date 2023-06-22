@@ -1,5 +1,7 @@
 import 'package:chat_first/core/network/local.dart';
 import 'package:chat_first/core/utils/constants.dart';
+import 'package:chat_first/core/utils/general_functions.dart';
+import 'package:chat_first/domain/entities/model_calls.dart';
 import 'package:chat_first/domain/entities/model_user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -8,6 +10,8 @@ import '../../domain/entities/model_message.dart';
 abstract class ChatRemoteDatsSourceRepository {
   void addUserRemoteDataSource(Map<String, dynamic> json);
   Future<List<Users>> getUserRemoteDataSource();
+  Future<List<Calls>> getCalls();
+  Future<void> addCalls(Map<String, dynamic> json);
   Future createMessageChatsRemoteDataSource(Map<String, dynamic> json);
   Future<List<Message>> getChatsRemoteDataSource(String receiveId);
   Future<Message> lastMessageRemoteDataSource(String receiveId);
@@ -23,7 +27,7 @@ class ChatRemoteDatsSource extends ChatRemoteDatsSourceRepository {
         SharedPreference.putDataString('id', json['id']);
       });
     } else {
-      await FirebaseFirestore.instance.collection('users').doc(Constants.idForMe).update(json);
+      await fireStoreUsers.doc(Constants.idForMe).update(json);
     }
   }
 
@@ -31,16 +35,16 @@ class ChatRemoteDatsSource extends ChatRemoteDatsSourceRepository {
   static List<Users> users = [];
   @override
   Future<List<Users>> getUserRemoteDataSource() async {
-    await FirebaseFirestore.instance.collection('users').get().then((value) async {
+    await fireStoreUsers.get().then((value) async {
       users = [];
 
-      value.docs.forEach((element) {
+      for (var element in value.docs) {
         if (element.data()['id'] == Constants.idForMe) {
           Constants.usersForMe = Users.fromJson(element.data());
         } else {
           users.add(Users.fromJson(element.data()));
         }
-      });
+      }
       lengthUsers = value.docs.length;
     });
 
@@ -49,13 +53,7 @@ class ChatRemoteDatsSource extends ChatRemoteDatsSourceRepository {
 
   @override
   Future createMessageChatsRemoteDataSource(Map<String, dynamic> json) async {
-    await FirebaseFirestore.instance
-        .collection('users')
-        .doc(json['sendId'])
-        .collection('chats')
-        .doc(json['receiveId'])
-        .collection('messages')
-        .add(json);
+    await fireStoreUsers.doc(json['sendId']).collection('chats').doc(json['receiveId']).collection('messages').add(json);
     await FirebaseFirestore.instance
         .collection('users')
         .doc(json['receiveId'])
@@ -68,32 +66,29 @@ class ChatRemoteDatsSource extends ChatRemoteDatsSourceRepository {
 
   @override
   Future<List<Message>> getChatsRemoteDataSource(String receiveId) async {
-    await FirebaseFirestore.instance
-        .collection('users')
+    fireStoreUsers
         .doc(Constants.idForMe)
-        .collection('chats')
+        .collection(Constants.collectionChats)
         .doc(receiveId)
         .collection('messages')
         .orderBy('dataTime')
         .snapshots()
         .listen((event) {
       Constants.modelOfChats = [];
-      event.docs.forEach((element) {
+      for (var element in event.docs) {
         Constants.modelOfChats.add(Message(element.data()));
-        print(element.data());
-      });
+      }
     });
 
     /* print(model);*/
-    return await Constants.modelOfChats;
+    return Constants.modelOfChats;
   }
 
   static Message? lastMessage;
 
   @override
   Future<Message> lastMessageRemoteDataSource(String receiveId) async {
-    await FirebaseFirestore.instance
-        .collection('users')
+    await fireStoreUsers
         .doc(Constants.idForMe)
         .collection(Constants.collectionChats)
         .doc(receiveId)
@@ -105,5 +100,25 @@ class ChatRemoteDatsSource extends ChatRemoteDatsSourceRepository {
     });
 
     return lastMessage!;
+  }
+
+  @override
+  Future<List<Calls>> getCalls() async {
+    List<Calls> call = [];
+    final response = await fireStoreUsers.doc(Constants.idForMe).collection(Constants.collectionCalls).get();
+    if (await hasNetwork()) {
+      for (var element in response.docs) {
+        call.add(Calls.fromJson(element.data()));
+      }
+    }
+
+    return call;
+  }
+
+  @override
+  Future<void> addCalls(Map<String, dynamic> json) async {
+    await fireStoreUsers.doc(Constants.idForMe).collection(Constants.collectionCalls).add(json);
+    await fireStoreUsers.doc(json['receiveId']).collection(Constants.collectionCalls).add(json);
+    //getChatsRemoteDataSource(json['receiveId']);
   }
 }

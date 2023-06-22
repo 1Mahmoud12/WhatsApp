@@ -52,7 +52,7 @@ class Messaging {
       Map<String, dynamic> user = jsonDecode(event.data['User']);
 
       if (event.data['click_action'] == 'calling') {
-        Constants.called.add(Calls({
+        Constants.called.add(Calls.fromJson({
           "name": user["name"],
           "receiveId": user["id"],
           "image": user["image"],

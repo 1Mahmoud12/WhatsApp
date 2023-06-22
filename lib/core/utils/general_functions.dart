@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:chat_first/core/utils/styles.dart';
 import 'package:chat_first/domain/entities/model_calls.dart';
 import 'package:chat_first/domain/entities/model_user.dart';
+import 'package:chat_first/presentation/cubit/block.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 
@@ -155,13 +159,21 @@ callFunction(context, Users model) async {
       action: "calling",
       tokenMeeting: tokenMeeting,
       tokenUser: model.tokenMessaging!);
-  Constants.called.add(Calls({
+
+  Constants.called.add(Calls.fromJson({
     "name": model.name,
     "receiveId": model.id,
     "image": model.image,
     'status': 'called',
     "dateTime": DateTime.now().toString(),
   }));
+  ChatCubit.get(context).addCalls({
+    "name": model.name,
+    "receiveId": model.id,
+    "image": model.image,
+    'status': 'called',
+    "dateTime": DateTime.now().toString(),
+  });
   navigatorReuse(
       context,
       MeetingScreen(
@@ -170,6 +182,19 @@ callFunction(context, Users model) async {
         meetingId: tokenMeeting,
         leaveMeeting: () => Navigator.pop(context),
       ));
+}
+
+Future<bool> hasNetwork() async {
+  try {
+    final result = await http.get(Uri.parse('http://www.google.com'));
+    if (result.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  } on SocketException catch (_) {
+    return false;
+  }
 }
 
 Widget textField({required context, required String nameField, required TextEditingController controller}) {

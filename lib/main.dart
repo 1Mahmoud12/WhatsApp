@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:chat_first/core/go_router.dart';
 import 'package:chat_first/core/network/local.dart';
 import 'package:chat_first/presentation/cubit/block.dart';
@@ -11,13 +9,12 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:http/http.dart' as http;
 
 import 'core/bloc_observer.dart';
 import 'core/utils/constants.dart';
+import 'core/utils/general_functions.dart';
 import 'core/utils/services/get_it.dart';
 import 'core/utils/theme/dark_theme.dart';
-import 'data/data_source/remote_data_source.dart';
 import 'presentation/cubit/states.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -36,19 +33,6 @@ void main() async {
     return ;
   };*/
 
-  Future<bool> hasNetwork() async {
-    try {
-      final result = await http.get(Uri.parse('http://www.google.com'));
-      if (result.statusCode == 200) {
-        return true;
-      } else {
-        return false;
-      }
-    } on SocketException catch (_) {
-      return false;
-    }
-  }
-
   Constants.connection = await hasNetwork();
 
   await Firebase.initializeApp();
@@ -62,7 +46,7 @@ void main() async {
   if (id != null) {
     Constants.idForMe = id;
 
-    ChatRemoteDatsSource().getUserRemoteDataSource();
+    // ChatRemoteDatsSource().getUserRemoteDataSource();
   }
 
   Bloc.observer = MyBlocObserver();
@@ -79,14 +63,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-            create: (context) => ChatCubit(
-                  seGet(),
-                  seGet(),
-                  seGet(),
-                  seGet(),
-                  seGet(),
-                )),
+        BlocProvider(create: (context) => ChatCubit(seGet(), seGet(), seGet(), seGet(), seGet(), seGet(), seGet())..getAllUsers()),
         BlocProvider(
             create: (context) => SignCubit(
                   seGet(),

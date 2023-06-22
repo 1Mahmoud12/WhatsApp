@@ -1,8 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:chat_first/core/network/local.dart';
 import 'package:chat_first/core/utils/constants.dart';
 import 'package:chat_first/data/data_source/remote_data_source.dart';
 import 'package:chat_first/domain/entities/model_user.dart';
+import 'package:chat_first/domain/use_case/add_call_use_call.dart';
 import 'package:chat_first/presentation/cubit/states.dart';
 import 'package:chat_first/presentation/screens/call_screen/call_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -12,9 +15,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../domain/entities/model_calls.dart';
 import '../../domain/entities/model_message.dart';
 import '../../domain/use_case/add_user_use_case.dart';
 import '../../domain/use_case/create_chats.dart';
+import '../../domain/use_case/get_calls_use_case.dart';
 import '../../domain/use_case/get_chat.dart';
 import '../../domain/use_case/get_users_use_case.dart';
 import '../screens/all_users_screen/howe_page_screen.dart';
@@ -25,8 +30,11 @@ class ChatCubit extends Cubit<ChatState> {
   final GetUsersUseCase getUsersUseCase;
   final CreateMessagesUseCase createMessageUseCase;
   final GetChatsUseCase getChatsUseCase;
+  final GetCallsUseCase getCallsUseCase;
+  final AddCallsUseCase addCallsUseCase;
   final GetLastMessageUseCase getLastMessageUseCase;
-  ChatCubit(this.addUsersUseCase, this.getUsersUseCase, this.createMessageUseCase, this.getChatsUseCase, this.getLastMessageUseCase)
+  ChatCubit(this.addUsersUseCase, this.getUsersUseCase, this.createMessageUseCase, this.getChatsUseCase, this.getLastMessageUseCase,
+      this.getCallsUseCase, this.addCallsUseCase)
       : super(InitialState());
 
   static ChatCubit get(context) => BlocProvider.of(context);
@@ -144,12 +152,13 @@ class ChatCubit extends Cubit<ChatState> {
   /// success =1 for loading , 2 for success , 0 for no matches and 10 for error
   int successMessages = 0;
   Map<String, List<Message>?> lastMessage = {};
+  List<String> storeMessages = [];
   void getLastMessage() {
     successMessages = 1;
     emit(GetMessagesLoadingState());
     for (int i = 0; i < ChatRemoteDatsSource.lengthUsers - 1; i++) {
       FirebaseFirestore.instance
-              .collection('users')
+              .collection(Constants.collectionUser)
               .doc(Constants.idForMe)
               .collection(Constants.collectionChats)
               .doc(ChatRemoteDatsSource.users[i].id)
@@ -160,10 +169,12 @@ class ChatCubit extends Cubit<ChatState> {
         lastMessage[ChatRemoteDatsSource.users[i].id!] = [];
         for (var element in event.docs) {
           lastMessage[ChatRemoteDatsSource.users[i].id!]!.add(Message(element.data()));
+          storeMessages.add(jsonEncode(element.data().toString()));
         }
         successMessages = event.docs.isNotEmpty ? 2 : 0;
         emit(GetMessagesSuccessState());
-        //changeBool(enabledMessagesScreen);
+        SharedPreference.putDataStringListModel('messages', storeMessages);
+        print(storeMessages);
 
         needScroll = true;
       }) /*.((error) {
@@ -177,6 +188,31 @@ class ChatCubit extends Cubit<ChatState> {
 
 
      });*/
+  }
+
+  late List<Calls> callsInformation;
+  void getCalls() {
+    callsInformation = [];
+    emit(GetCallsLoadingState());
+    getCallsUseCase.call().then((value) {
+      print(value);
+      callsInformation = value;
+      emit(GetCallsSuccessState());
+    });
+
+    /* FirebaseFirestore.instance.collection(Constants.collectionUser).doc(Constants.idForMe).collection(Constants.collectionCalls).get().then((value) {
+      value.docs.forEach((element) {
+        callsInformation.add(Calls(element.data()));
+      });
+      emit(GetCallsSuccessState());
+    });*/
+  }
+
+  void addCalls(Map<String, dynamic> json) {
+    emit(AddCallsLoadingState());
+    addCallsUseCase.call(json);
+
+    emit(AddCallsSuccessState());
   }
 
   int increment() {

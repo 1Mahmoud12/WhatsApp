@@ -1,4 +1,3 @@
-import 'package:camera/camera.dart';
 import 'package:chat_first/core/audio/player.dart';
 import 'package:chat_first/core/utils/colors.dart';
 import 'package:chat_first/domain/entities/model_message.dart';
@@ -23,23 +22,19 @@ class MessagesWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10),
       child: Align(
-        alignment: message.sendId == Constants.idForMe
-            ? Alignment.centerRight
-            : Alignment.centerLeft,
+        alignment: message.sendId == Constants.idForMe ? Alignment.centerRight : Alignment.centerLeft,
         child: Container(
           decoration: BoxDecoration(
-              color: HexColor(message.sendId == Constants.idForMe
-                  ? AppColors.blueColor
-                  : AppColors.greyColor),
+              gradient: SweepGradient(
+                colors: [message.sendId == Constants.idForMe ? AppColors.blueColor : AppColors.blackColor, AppColors.whiteColor],
+                stops: const [0, 1],
+                center: Alignment.topLeft,
+              ),
               borderRadius: BorderRadius.only(
                 topLeft: const Radius.circular(30),
                 topRight: const Radius.circular(30),
-                bottomLeft: message.sendId == Constants.idForMe
-                    ? const Radius.circular(30)
-                    : const Radius.circular(0),
-                bottomRight: message.sendId == Constants.idForMe
-                    ? const Radius.circular(0)
-                    : const Radius.circular(30),
+                bottomLeft: message.sendId == Constants.idForMe ? const Radius.circular(30) : const Radius.circular(0),
+                bottomRight: message.sendId == Constants.idForMe ? const Radius.circular(0) : const Radius.circular(30),
               )),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -50,9 +45,11 @@ class MessagesWidget extends StatelessWidget {
                   width: widthMedia * .4,
                   height: heightMedia * .2,
                   decoration: BoxDecoration(
-                      color: HexColor(message.sendId == Constants.idForMe
-                          ? AppColors.blueColor
-                          : AppColors.greyColor),
+                      gradient: SweepGradient(
+                        colors: [message.sendId == Constants.idForMe ? AppColors.blueColor : AppColors.blackColor, AppColors.whiteColor],
+                        stops: const [0, 1],
+                        center: Alignment.topLeft,
+                      ),
                       borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(30),
                         topRight: Radius.circular(30),
@@ -60,7 +57,6 @@ class MessagesWidget extends StatelessWidget {
                       )),
                   child: InkWell(
                       onTap: () {
-                        XFile picture = XFile(message.image!);
                         navigatorReuse(
                             context,
                             PreviewPage(
@@ -73,19 +69,14 @@ class MessagesWidget extends StatelessWidget {
               if (message.text != '')
                 Padding(
                   padding: const EdgeInsets.all(16),
-                  child: Text(message.text,
-                      maxLines: 5,
-                      style: AppStyles.style15
-                          .copyWith(color: HexColor(AppColors.boldColor))),
+                  child: Text(message.text, maxLines: 5, style: AppStyles.style15.copyWith(color: HexColor(AppColors.boldColor))),
                 ),
-              if (message.audio != null && message.audio!.length > 3)
-                Player(filePath: message.audio!),
+              if (message.audio != null && message.audio!.length > 3) Player(filePath: message.audio!),
               Padding(
                 padding: const EdgeInsets.only(left: 16, bottom: 4, right: 16),
                 child: Text(
                   subStringForTime(time: message.dateTime.toString()),
-                  style: AppStyles.style13
-                      .copyWith(color: HexColor(AppColors.lightColor)),
+                  style: AppStyles.style13.copyWith(color: HexColor(AppColors.lightColor)),
                 ),
               ),
             ],
@@ -97,5 +88,10 @@ class MessagesWidget extends StatelessWidget {
 }
 
 /*
+SweepGradient(
+          colors: [Color(0xff171717), Color(0xffffffff)],
+          stops: [0, 1],
+          center: Alignment.topLeft,
+        )
 
 */

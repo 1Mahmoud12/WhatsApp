@@ -46,13 +46,16 @@ class MainPage extends StatelessWidget {
             currentIndex: ChatCubit.get(context).currentState,
             onTap: (index) async {
               /// to change bottom navigation bar
-              print(index);
+
               ChatCubit.get(context).changeIndex(index);
 
-              if (ChatCubit.get(context).currentState == 1) {
+              if (index == 1) {
                 await availableCameras().then(
                   (value) => Navigator.push(context, MaterialPageRoute(builder: (_) => CameraPage(cameras: value))),
                 );
+              }
+              if (index == 0) {
+                ChatCubit.get(context).getCalls();
               }
             },
             items: bottomNavigationBar,

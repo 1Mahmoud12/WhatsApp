@@ -34,7 +34,6 @@ class CallScreen extends StatelessWidget {
 }
 */
 
-import 'package:chat_first/core/utils/constants.dart';
 import 'package:chat_first/presentation/cubit/block.dart';
 import 'package:chat_first/presentation/cubit/states.dart';
 import 'package:chat_first/presentation/screens/call_screen/items_call_widget.dart';
@@ -60,13 +59,13 @@ class _VideoSDKQuickStartState extends State<VideoSDKQuickStart> {
       ),
       body: BlocBuilder<ChatCubit, ChatState>(
         builder: (context, state) => ConditionalBuilder(
-          condition: false,
+          condition: ChatCubit.get(context).callsInformation.isNotEmpty,
           builder: (context) => Padding(
             padding: const EdgeInsets.symmetric(vertical: 0.0),
             child: ListView.separated(
-                itemBuilder: (context, index) => ItemsCallWidget(model: Constants.called[index]),
+                itemBuilder: (context, index) => ItemsCallWidget(model: ChatCubit.get(context).callsInformation[index]),
                 separatorBuilder: (context, index) => const Divider(color: Colors.white, height: 3),
-                itemCount: Constants.called.length),
+                itemCount: ChatCubit.get(context).callsInformation.length),
           ),
           fallback: (context) => animatedText(text: 'No calls'),
         ),
