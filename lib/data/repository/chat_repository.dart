@@ -44,4 +44,9 @@ class ChatRepository implements ChatRepositoryDomain {
   Future<void> addCalls(Map<String, dynamic> json) async {
     return await chatRemoteDatsSourceRepository.addCalls(json);
   }
+
+  @override
+  void removeMessage(String receivedId) {
+    chatRemoteDatsSourceRepository.removeMessage(receivedId);
+  }
 }

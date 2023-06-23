@@ -6,6 +6,7 @@ import 'package:chat_first/domain/use_case/add_user_use_case.dart';
 import 'package:chat_first/domain/use_case/create_chats.dart';
 import 'package:chat_first/domain/use_case/get_chat.dart';
 import 'package:chat_first/domain/use_case/get_users_use_case.dart';
+import 'package:chat_first/domain/use_case/remove_message.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../../domain/use_case/get_calls_use_case.dart';
@@ -28,5 +29,6 @@ class ServiceGetIt {
     seGet.registerLazySingleton<GetLastMessageUseCase>(() => GetLastMessageUseCase(seGet()));
     seGet.registerLazySingleton<GetCallsUseCase>(() => GetCallsUseCase(seGet()));
     seGet.registerLazySingleton<AddCallsUseCase>(() => AddCallsUseCase(seGet()));
+    seGet.registerLazySingleton<RemoveMessageUseCase>(() => RemoveMessageUseCase(seGet()));
   }
 }

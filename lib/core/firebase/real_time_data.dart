@@ -3,7 +3,8 @@ import 'package:chat_first/domain/entities/model_message.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-import '../../presentation/screens/chat_screen/widget_primary_secondary_message.dart';
+import '../../presentation/screens/chat_screen/message_widget.dart';
+import '../utils/general_functions.dart';
 
 class ChatsInformation extends StatefulWidget {
   final String receiveId;
@@ -31,11 +32,12 @@ class ChatsInformationState extends State<ChatsInformation> {
       stream: usersStream,
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Center(child: Text('NO Connection'))));
           return const Text('NO Connection');
         }
 
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Text('data');
+          return indicator();
         }
         if (snapshot.hasData) {
           Future.delayed(

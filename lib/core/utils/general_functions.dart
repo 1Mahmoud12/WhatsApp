@@ -128,6 +128,14 @@ Widget indicator() {
   );
 }
 
+void keyboard(context) {
+  MediaQuery.of(context).viewInsets.bottom == 0
+      ? print(
+          'Keyboard is hidden',
+        )
+      : print('Keyboard is visible');
+}
+
 Widget animatedText({required String text}) {
   return Center(
       child: DefaultTextStyle(

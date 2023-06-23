@@ -63,7 +63,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => ChatCubit(seGet(), seGet(), seGet(), seGet(), seGet(), seGet(), seGet())..getAllUsers()),
+        BlocProvider(create: (context) => ChatCubit(seGet(), seGet(), seGet(), seGet(), seGet(), seGet(), seGet(), seGet())..getAllUsers()),
         BlocProvider(
             create: (context) => SignCubit(
                   seGet(),

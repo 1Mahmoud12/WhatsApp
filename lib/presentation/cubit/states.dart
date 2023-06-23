@@ -43,6 +43,13 @@ class GetMessagesErrorState extends ChatState {}
 
 class GetMessagesLoadingState extends ChatState {}
 
+/// Get Chats
+class RemoveMessagesSuccessState extends ChatState {}
+
+class RemoveMessagesErrorState extends ChatState {}
+
+class RemoveMessagesLoadingState extends ChatState {}
+
 /// Get Calls
 class GetCallsSuccessState extends ChatState {}
 

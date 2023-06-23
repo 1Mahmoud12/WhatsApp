@@ -5,15 +5,17 @@ import 'package:chat_first/domain/entities/model_user.dart';
 import 'package:chat_first/presentation/cubit/block.dart';
 import 'package:chat_first/presentation/cubit/states.dart';
 import 'package:chat_first/presentation/screens/chat_screen/lastSeen.dart';
-import 'package:chat_first/presentation/screens/chat_screen/widget_primary_secondary_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/utils/constants.dart';
+import 'message_widget.dart';
 import 'widget_send_message.dart';
 
-class Chat extends StatelessWidget {
+class Chat extends StatefulWidget {
   final int countInList;
 
   final Users modelUser;
@@ -25,9 +27,44 @@ class Chat extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    ScrollController scroll = ScrollController();
+  State<Chat> createState() => _ChatState();
+}
 
+class _ChatState extends State<Chat> with WidgetsBindingObserver {
+  ScrollController scroll = ScrollController();
+  @override
+  void initState() {
+    super.initState();
+    KeyboardVisibilityController().onChange.listen((bool visible) {
+      if (visible) {
+        ChatCubit.get(context)
+            .addMessage(Message.fromJson({
+          'sendId': widget.modelUser.id,
+          'receiveId': Constants.idForMe,
+          'text': 'Typing0x',
+          'dateTime': DateTime.now().toString(),
+          'createdAt': DateTime.now(),
+        }).toMap())
+            .whenComplete(() {
+          Future.delayed(
+            const Duration(milliseconds: 100),
+            () => scroll.jumpTo(scroll.position.maxScrollExtent),
+          );
+        });
+      } else if (!visible) {
+        print(visible);
+        ChatCubit.get(context).removeMessage(widget.modelUser.id);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     /// very important to implement in many methods
     if (ChatCubit.get(context).needScroll) {
       scroll = ScrollController();
@@ -52,11 +89,11 @@ class Chat extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              modelUser.name!,
+              widget.modelUser.name,
               style: AppStyles.style16,
             ),
             LastSeen(
-              id: modelUser.id!,
+              id: widget.modelUser.id,
             )
           ],
         ),
@@ -64,7 +101,7 @@ class Chat extends StatelessWidget {
           SizedBox(
               width: 50,
               child: MaterialButton(
-                onPressed: () => callFunction(context, modelUser),
+                onPressed: () => callFunction(context, widget.modelUser),
                 child: Image.asset('assets/phone.png'),
               )),
         ],
@@ -85,14 +122,14 @@ class Chat extends StatelessWidget {
                   },
                   child: ListView(
                     controller: scroll,
-                    children: ChatCubit.get(context).lastMessage[modelUser.id]!.map((Message message) {
+                    children: ChatCubit.get(context).lastMessage[widget.modelUser.id]!.map((Message message) {
                       return MessagesWidget(message: message);
                     }).toList(),
                   ),
                 ),
               ),
               SendMessage(
-                receiveId: modelUser.id!,
+                receiveId: widget.modelUser.id,
                 scroll: scroll,
               )
             ],

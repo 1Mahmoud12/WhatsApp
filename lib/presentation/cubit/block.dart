@@ -6,6 +6,7 @@ import 'package:chat_first/core/utils/constants.dart';
 import 'package:chat_first/data/data_source/remote_data_source.dart';
 import 'package:chat_first/domain/entities/model_user.dart';
 import 'package:chat_first/domain/use_case/add_call_use_call.dart';
+import 'package:chat_first/domain/use_case/remove_message.dart';
 import 'package:chat_first/presentation/cubit/states.dart';
 import 'package:chat_first/presentation/screens/call_screen/call_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -32,9 +33,10 @@ class ChatCubit extends Cubit<ChatState> {
   final GetChatsUseCase getChatsUseCase;
   final GetCallsUseCase getCallsUseCase;
   final AddCallsUseCase addCallsUseCase;
+  final RemoveMessageUseCase removeMessageUseCase;
   final GetLastMessageUseCase getLastMessageUseCase;
   ChatCubit(this.addUsersUseCase, this.getUsersUseCase, this.createMessageUseCase, this.getChatsUseCase, this.getLastMessageUseCase,
-      this.getCallsUseCase, this.addCallsUseCase)
+      this.getCallsUseCase, this.addCallsUseCase, this.removeMessageUseCase)
       : super(InitialState());
 
   static ChatCubit get(context) => BlocProvider.of(context);
@@ -185,6 +187,12 @@ class ChatCubit extends Cubit<ChatState> {
 
 
      });*/
+  }
+
+  void removeMessage(String receivedId) {
+    //emit(RemoveMessagesLoadingState());
+    removeMessageUseCase.call(receivedId);
+    //emit(RemoveMessagesSuccessState());
   }
 
   late List<Calls> callsInformation;

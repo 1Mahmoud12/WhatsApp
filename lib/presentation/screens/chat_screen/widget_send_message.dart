@@ -15,6 +15,7 @@ import '../../../core/utils/colors.dart';
 class SendMessage extends StatelessWidget {
   final String receiveId;
   final ScrollController scroll;
+
   const SendMessage({super.key, required this.receiveId, required this.scroll});
 
   static TextEditingController controller = TextEditingController();
@@ -43,7 +44,10 @@ class SendMessage extends StatelessWidget {
                   flex: 4,
                   child: SizedBox(
                     width: widthMedia * 59,
-                    child: TextFieldMessage(receiveId: receiveId, scroll: scroll),
+                    child: TextFieldMessage(
+                      receiveId: receiveId,
+                      scroll: scroll,
+                    ),
                   ),
                 ),
                 const Spacer(),
@@ -87,13 +91,20 @@ class SendMessage extends StatelessWidget {
                                   ],
                                 )).whenComplete(() {
                           if (Constants.audio != '') {
-                            ChatCubit.get(context).addMessage(Message.fromJson({
+                            ChatCubit.get(context)
+                                .addMessage(Message.fromJson({
                               'sendId': Constants.idForMe,
                               'receiveId': receiveId,
                               'audio': Constants.audio,
                               'dateTime': DateTime.now().toString(),
                               'createdAt': DateTime.now(),
-                            }).toMap());
+                            }).toMap())
+                                .whenComplete(() {
+                              Future.delayed(
+                                const Duration(milliseconds: 100),
+                                () => scroll.jumpTo(scroll.position.maxScrollExtent),
+                              );
+                            });
                           }
                         });
                       },
@@ -108,7 +119,6 @@ class SendMessage extends StatelessWidget {
                 if (controller.text != ' ' || controller.text.isNotEmpty)
                   IconButton(
                       onPressed: () async {
-                        print("update : ${controller.text}");
                         ChatCubit.get(context)
                             .addMessage(Message.fromJson({
                           'sendId': Constants.idForMe,

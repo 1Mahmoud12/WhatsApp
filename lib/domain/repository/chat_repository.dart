@@ -11,4 +11,5 @@ abstract class ChatRepositoryDomain {
   Future<Message> lastMessage(String receiveId);
   Future<List<Calls>> getCalls();
   Future<void> addCalls(Map<String, dynamic> json);
+  void removeMessage(String receivedId);
 }

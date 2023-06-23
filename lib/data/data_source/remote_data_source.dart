@@ -15,6 +15,7 @@ abstract class ChatRemoteDatsSourceRepository {
   Future createMessageChatsRemoteDataSource(Map<String, dynamic> json);
   Future<List<Message>> getChatsRemoteDataSource(String receiveId);
   Future<Message> lastMessageRemoteDataSource(String receiveId);
+  void removeMessage(String receivedId);
 }
 
 class ChatRemoteDatsSource extends ChatRemoteDatsSourceRepository {
@@ -59,13 +60,16 @@ class ChatRemoteDatsSource extends ChatRemoteDatsSourceRepository {
         .doc(json['receiveId'])
         .collection(Constants.collectionMessages)
         .add(json);
-    await fireStoreUsers
-        .doc(json['receiveId'])
-        .collection(Constants.collectionChats)
-        .doc(json['sendId'])
-        .collection(Constants.collectionMessages)
-        .add(json);
-    //getChatsRemoteDataSource(json['receiveId']);
+    if (json['text'] != 'Typing0x') {
+      print(json['text']);
+      await fireStoreUsers
+          .doc(json['receiveId'])
+          .collection(Constants.collectionChats)
+          .doc(json['sendId'])
+          .collection(Constants.collectionMessages)
+          .add(json);
+      //getChatsRemoteDataSource(json['receiveId']);
+    }
   }
 
   @override
@@ -122,5 +126,19 @@ class ChatRemoteDatsSource extends ChatRemoteDatsSourceRepository {
   Future<void> addCalls(Map<String, dynamic> json) async {
     await fireStoreUsers.doc(json['sendId']).collection(Constants.collectionCalls).add(json);
     //await fireStoreUsers.doc(json["receiveId"]).collection(Constants.collectionCalls).add(json);
+  }
+
+  @override
+  void removeMessage(String receivedId) {
+    fireStoreUsers
+        .doc(receivedId)
+        .collection(Constants.collectionChats)
+        .doc(Constants.idForMe)
+        .collection(Constants.collectionMessages)
+        .orderBy('createdAt')
+        .get()
+        .then((value) {
+      value.docs.last.reference.delete();
+    });
   }
 }
