@@ -45,8 +45,6 @@ void main() async {
   String? id = await SharedPreference.getData('id');
   if (id != null) {
     Constants.idForMe = id;
-
-    // ChatRemoteDatsSource().getUserRemoteDataSource();
   }
 
   Bloc.observer = MyBlocObserver();

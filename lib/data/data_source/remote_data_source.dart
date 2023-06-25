@@ -138,7 +138,9 @@ class ChatRemoteDatsSource extends ChatRemoteDatsSourceRepository {
         .orderBy('createdAt')
         .get()
         .then((value) {
-      value.docs.last.reference.delete();
+      value.docs.forEach((element) {
+        if (element.data()['text'] == 'Typing0x') element.reference.delete();
+      });
     });
   }
 }

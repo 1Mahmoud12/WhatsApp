@@ -42,9 +42,6 @@ class SignIn extends StatelessWidget {
                 children: [
                   TextButton(
                       onPressed: () async {
-                        Constants.usersForMe = Users.fromJson({
-                          "phone": phoneController.text,
-                        });
                         FirebaseAuth auth = FirebaseAuth.instance;
 
                         await auth.verifyPhoneNumber(
@@ -82,16 +79,15 @@ class SignIn extends StatelessWidget {
 
                                                     /*Constants.usersForMe?.id = value.user!.uid;
                                                     Constants.usersForMe?.phone = phoneController.text;*/
-                                                    Users.fromJson({
-                                                      'id': value.user!.uid,
-                                                      'phone': phoneController.text,
-                                                    });
+                                                    Constants.usersForMe =
+                                                        Users.fromJson({'id': value.user!.uid, 'phone': phoneController.text, 'name': 'new value'});
 
                                                     Constants.tokenMessaging = await FirebaseMessaging.instance.getToken() ?? '';
                                                     SignCubit.get(context).addUser({
                                                       'id': value.user!.uid,
                                                       'phone': phoneController.text,
                                                       'lastSeen': DateTime.now().toString(),
+                                                      'name': 'new value'
                                                     });
                                                     Navigator.of(context).push(createRoute(Profile(firstTimeSign: true), -1, 1));
                                                   });
@@ -104,20 +100,11 @@ class SignIn extends StatelessWidget {
                             auth.signInWithCredential(credential).then((value) async {
                               SharedPreference.putDataString('id', value.user!.uid);
 
-                              /*Constants.usersForMe?.id = value.user!.uid;
-                              Constants.usersForMe?.phone = phoneController.text;*/
-
-                              Users.fromJson({
-                                'id': value.user!.uid,
-                                'phone': phoneController.text,
-                              });
+                              Constants.usersForMe = Users.fromJson({'id': value.user!.uid, 'phone': phoneController.text, 'name': 'new value'});
 
                               Constants.tokenMessaging = await FirebaseMessaging.instance.getToken() ?? '';
-                              SignCubit.get(context).addUser({
-                                'id': value.user!.uid,
-                                'phone': phoneController.text,
-                                'lastSeen': DateTime.now().toString(),
-                              });
+                              SignCubit.get(context).addUser(
+                                  {'id': value.user!.uid, 'phone': phoneController.text, 'lastSeen': DateTime.now().toString(), 'name': 'new value'});
                               Navigator.of(context).pushReplacement(createRoute(Profile(firstTimeSign: true), -1, 1));
                             });
                           },

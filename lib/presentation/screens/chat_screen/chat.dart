@@ -32,28 +32,34 @@ class Chat extends StatefulWidget {
 
 class _ChatState extends State<Chat> with WidgetsBindingObserver {
   ScrollController scroll = ScrollController();
+  bool isVisible = false;
+
+  bool canExecute = true;
   @override
   void initState() {
     super.initState();
     KeyboardVisibilityController().onChange.listen((bool visible) {
-      if (visible) {
-        ChatCubit.get(context)
-            .addMessage(Message.fromJson({
-          'sendId': widget.modelUser.id,
-          'receiveId': Constants.idForMe,
-          'text': 'Typing0x',
-          'dateTime': DateTime.now().toString(),
-          'createdAt': DateTime.now(),
-        }).toMap())
-            .whenComplete(() {
-          Future.delayed(
-            const Duration(milliseconds: 100),
-            () => scroll.jumpTo(scroll.position.maxScrollExtent),
-          );
-        });
-      } else if (!visible) {
-        print(visible);
-        ChatCubit.get(context).removeMessage(widget.modelUser.id);
+      isVisible = visible;
+      if (canExecute) {
+        canExecute = !canExecute;
+
+        if (isVisible) {
+          ChatCubit.get(context).addMessage(Message.fromJson({
+            'sendId': widget.modelUser.id,
+            'receiveId': Constants.idForMe,
+            'text': 'Typing0x',
+            'dateTime': DateTime.now().toString(),
+            'createdAt': DateTime.now(),
+          }).toMap());
+        } else if (!isVisible) {
+          ChatCubit.get(context).removeMessage(widget.modelUser.id);
+        }
+        Future.delayed(
+          const Duration(milliseconds: 500),
+          () {
+            canExecute = !canExecute;
+          },
+        );
       }
     });
   }
@@ -61,13 +67,13 @@ class _ChatState extends State<Chat> with WidgetsBindingObserver {
   @override
   void dispose() {
     super.dispose();
+    scroll.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     /// very important to implement in many methods
     if (ChatCubit.get(context).needScroll) {
-      scroll = ScrollController();
       Future.delayed(
         const Duration(milliseconds: 100),
         () => scroll.jumpTo(scroll.position.maxScrollExtent),
@@ -106,7 +112,14 @@ class _ChatState extends State<Chat> with WidgetsBindingObserver {
               )),
         ],
       ),
-      body: BlocBuilder<ChatCubit, ChatState>(builder: (context, state) {
+      body: BlocConsumer<ChatCubit, ChatState>(listener: (context, state) {
+        if (state is GetMessagesSuccessState) {
+          Future.delayed(
+        const Duration(milliseconds: 100),
+        () => scroll.jumpTo(scroll.position.maxScrollExtent),
+      );
+        }
+      }, builder: (context, state) {
         return WillPopScope(
           child: Stack(
             alignment: AlignmentDirectional.bottomCenter,
@@ -131,7 +144,7 @@ class _ChatState extends State<Chat> with WidgetsBindingObserver {
               SendMessage(
                 receiveId: widget.modelUser.id,
                 scroll: scroll,
-              )
+              ),
             ],
           ),
           onWillPop: () async {

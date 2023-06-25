@@ -22,27 +22,27 @@ class MessagesWidget extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10),
-      child: Align(
-        alignment: message.sendId == Constants.idForMe ? Alignment.centerRight : Alignment.centerLeft,
-        child: Container(
-          decoration: BoxDecoration(
-              gradient: SweepGradient(
-                colors: [message.sendId == Constants.idForMe ? AppColors.blueColor : AppColors.blackColor, AppColors.whiteColor],
-                stops: const [0, 1],
-                center: Alignment.topLeft,
-              ),
-              borderRadius: BorderRadius.only(
-                topLeft: const Radius.circular(30),
-                topRight: const Radius.circular(30),
-                bottomLeft: message.sendId == Constants.idForMe ? const Radius.circular(30) : const Radius.circular(0),
-                bottomRight: message.sendId == Constants.idForMe ? const Radius.circular(0) : const Radius.circular(30),
-              )),
-          child: message.text == 'Typing0x'
-              ? LottieBuilder.asset(
-                  'assets/animation/typing.json',
-                  fit: BoxFit.cover,
-                )
-              : Column(
+      child: message.text == 'Typing0x'
+          ? Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: LottieBuilder.asset('assets/animation/typing.json'),
+            )
+          : Align(
+              alignment: message.sendId == Constants.idForMe ? Alignment.centerRight : Alignment.centerLeft,
+              child: Container(
+                decoration: BoxDecoration(
+                    gradient: SweepGradient(
+                      colors: [message.sendId == Constants.idForMe ? AppColors.blueColor : AppColors.blackColor, AppColors.whiteColor],
+                      stops: const [0, 1],
+                      center: Alignment.topLeft,
+                    ),
+                    borderRadius: BorderRadius.only(
+                      topLeft: const Radius.circular(30),
+                      topRight: const Radius.circular(30),
+                      bottomLeft: message.sendId == Constants.idForMe ? const Radius.circular(30) : const Radius.circular(0),
+                      bottomRight: message.sendId == Constants.idForMe ? const Radius.circular(0) : const Radius.circular(30),
+                    )),
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     if (message.image != '')
@@ -72,15 +72,10 @@ class MessagesWidget extends StatelessWidget {
                             },
                             child: Image.network(message.image)),
                       ),
-                    if (message.text != '')
+                    if (message.text != ' ')
                       Padding(
                         padding: const EdgeInsets.all(16),
                         child: Text(message.text, maxLines: 5, style: AppStyles.style15.copyWith(color: HexColor(AppColors.boldColor))),
-                      ),
-                    if (message.text == 'Typing0x')
-                      LottieBuilder.asset(
-                        'assets/animation/typing.json',
-                        fit: BoxFit.cover,
                       ),
                     if (message.audio.length > 3) Player(filePath: message.audio),
                     Padding(
@@ -92,8 +87,8 @@ class MessagesWidget extends StatelessWidget {
                     ),
                   ],
                 ),
-        ),
-      ),
+              ),
+            ),
     );
   }
 }

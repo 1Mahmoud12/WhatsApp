@@ -132,10 +132,10 @@ class SendMessage extends StatelessWidget {
                             const Duration(milliseconds: 100),
                             () => scroll.jumpTo(scroll.position.maxScrollExtent),
                           );
+                          ChatCubit.get(context).removeMessage(receiveId);
                         });
                         ChatCubit.get(context).changeEmojiShow = ChatCubit.get(context).changeBool(true);
                         SystemChannels.textInput.invokeMethod("TextInput.hide");
-
                         controller.clear();
                       },
                       icon: const CircleAvatar(

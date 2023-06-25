@@ -3,6 +3,7 @@ import 'package:chat_first/domain/entities/model_message.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+import '../../presentation/cubit/block.dart';
 import '../../presentation/screens/chat_screen/message_widget.dart';
 import '../utils/general_functions.dart';
 
@@ -17,6 +18,20 @@ class ChatsInformation extends StatefulWidget {
 }
 
 class ChatsInformationState extends State<ChatsInformation> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (ChatCubit.get(context).needScroll) {
+        Future.delayed(
+          const Duration(milliseconds: 100),
+          () => ChatsInformation.scroll.jumpTo(ChatsInformation.scroll.position.maxScrollExtent),
+        );
+        ChatCubit.get(context).needScroll = ChatCubit.get(context).changeBool(true);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final Stream<QuerySnapshot> usersStream = FirebaseFirestore.instance

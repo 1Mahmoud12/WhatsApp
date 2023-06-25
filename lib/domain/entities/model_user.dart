@@ -26,7 +26,7 @@ class Users extends Equatable {
         id: json['id'] ?? Constants.idForMe,
         name: json['name'] ?? Constants.usersForMe!.name,
         age: json['age'] ?? '',
-        tokenMessaging: json['tokenMessaging'] ?? Constants.tokenMessaging,
+        tokenMessaging: json['tokenMessaging'] ?? Constants.tokenMessaging ?? '',
         phone: json['phone'] ?? Constants.usersForMe!.phone,
         image: json['image'] ?? "assets/person.png",
         lastSeen: json['lastSeen'] ?? '',

@@ -102,17 +102,12 @@ class Profile extends StatelessWidget {
                           color: Colors.blue,
                         ))),
                     onPressed: () async {
-                      /*  Constants.usersForMe!.name = nameController.text;
-                      Constants.usersForMe!.phone = phoneController.text;
-                      Constants.usersForMe!.age = ageController.text;*/
-
                       Users.fromJson({
                         "name": nameController.text,
                         "phone": phoneController.text,
                         "age": ageController.text,
                       });
 
-                      print("SSSSSSSSSSS : ${Constants.usersForMe!.name}");
                       firstTimeSign ? navigatorReuse(context, const MainPage()) : null;
                       return await SignCubit.get(context).addUser({
                         'id': Constants.usersForMe!.id,
@@ -139,7 +134,7 @@ class Profile extends StatelessWidget {
     required double widthMedia,
     required double heightMedia,
   }) {
-    return Constants.usersForMe!.image == 'assets/person.png'
+    return Constants.usersForMe != null && Constants.usersForMe!.image == 'assets/person.png'
         ? Image.asset(
             'assets/person.png',
             width: widthMedia * .4,
@@ -178,7 +173,6 @@ class Profile extends StatelessWidget {
                 child: TextFormField(
                   maxLines: null,
                   controller: controller,
-                  obscureText: nameField == 'password',
                   decoration: InputDecoration(
                     hintText: controller.text,
                     hintStyle: AppStyles.style15.copyWith(color: Colors.white),

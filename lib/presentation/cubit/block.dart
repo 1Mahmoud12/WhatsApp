@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:chat_first/core/network/local.dart';
@@ -129,10 +128,13 @@ class ChatCubit extends Cubit<ChatState> {
     return index;
   }
 
+  List<Users> users = [];
   getAllUsers() async {
     emit(GetAllUsersLoadingState());
     await getUsersUseCase.call().then((value) {
       emit(GetAllUsersSuccessState());
+      print("valueeeeee : $value");
+      users = value;
       if (ChatRemoteDatsSource.users.isNotEmpty) {
         getLastMessage();
       }
@@ -146,6 +148,7 @@ class ChatCubit extends Cubit<ChatState> {
     emit(CreateMessageLoadingState());
     createMessageUseCase.call(json).then((value) {
       emit(CreateMessageSuccessState());
+      needScroll = true;
     });
   }
 
@@ -156,43 +159,35 @@ class ChatCubit extends Cubit<ChatState> {
   void getLastMessage() {
     successMessages = 1;
     emit(GetMessagesLoadingState());
-    for (int i = 0; i < ChatRemoteDatsSource.lengthUsers - 1; i++) {
+    for (int i = 0; i < users.length; i++) {
       FirebaseFirestore.instance
-              .collection(Constants.collectionUser)
-              .doc(Constants.idForMe)
-              .collection(Constants.collectionChats)
-              .doc(ChatRemoteDatsSource.users[i].id)
-              .collection(Constants.collectionMessages)
-              .orderBy('createdAt')
-              .snapshots()
-              .listen((event) {
-        lastMessage[ChatRemoteDatsSource.users[i].id] = [];
-        for (var element in event.docs) {
-          lastMessage[ChatRemoteDatsSource.users[i].id]!.add(Message.fromJson(element.data()));
-          storeMessages.add(jsonEncode(element.data().toString()));
+          .collection(Constants.collectionUser)
+          .doc(Constants.idForMe)
+          .collection(Constants.collectionChats)
+          .doc(users[i].id)
+          .collection(Constants.collectionMessages)
+          .orderBy('createdAt')
+          .snapshots()
+          .listen((event) {
+        if (event.docs.isNotEmpty) {
+          lastMessage[users[i].id] = [];
+          for (var element in event.docs) {
+            lastMessage[users[i].id]!.add(Message.fromJson(element.data()));
+            //storeMessages.add(jsonEncode(element.data().toString()));
+          }
         }
-        successMessages = event.docs.isNotEmpty ? 2 : 0;
         emit(GetMessagesSuccessState());
-        SharedPreference.putDataStringListModel('messages', storeMessages);
-
-        needScroll = true;
-      }) /*.((error) {
-    ScaffoldMessenger.of(context).showSnackBar(snackBarMe(color: Colors.red, text: 'no connection');
-        successMessages = 10;
-      })*/
-          ;
+        successMessages = lastMessage.isNotEmpty ? 2 : 0;
+      });
     }
 
-    /* await getLastMessageUseCase.call(receiveId).then((value)  {
+    SharedPreference.putDataStringListModel('messages', storeMessages);
 
-
-     });*/
+    needScroll = true;
   }
 
   void removeMessage(String receivedId) {
-    //emit(RemoveMessagesLoadingState());
     removeMessageUseCase.call(receivedId);
-    //emit(RemoveMessagesSuccessState());
   }
 
   late List<Calls> callsInformation;

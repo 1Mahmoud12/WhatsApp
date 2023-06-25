@@ -20,8 +20,6 @@ class AllUsersScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ChatCubit.get(context).getLastMessage();
-
     if (!Constants.connection) {
       Future.delayed(
         const Duration(milliseconds: 10),
@@ -108,6 +106,7 @@ class AllUsersScreen extends StatelessWidget {
       ),
       body: BlocBuilder<ChatCubit, ChatState>(
         builder: (context, state) {
+          print("successMessages : ${ChatCubit.get(context).successMessages}");
           return ConditionalBuilder(
             condition: ChatCubit.get(context).successMessages == 2,
             builder: (context) {
