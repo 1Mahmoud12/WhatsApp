@@ -89,7 +89,7 @@ class SignIn extends StatelessWidget {
                                                       'lastSeen': DateTime.now().toString(),
                                                       'name': 'new value'
                                                     });
-                                                    Navigator.of(context).push(createRoute(Profile(firstTimeSign: true), -1, 1));
+                                                    Navigator.of(context).pushReplacement(createRoute(Profile(firstTimeSign: true), -1, 1));
                                                   });
                                                 },
                                                 child: const Text('ok'))

@@ -102,10 +102,12 @@ class Profile extends StatelessWidget {
                           color: Colors.blue,
                         ))),
                     onPressed: () async {
-                      Users.fromJson({
+                      print(nameController.text);
+                      Constants.usersForMe = Users.fromJson({
                         "name": nameController.text,
                         "phone": phoneController.text,
                         "age": ageController.text,
+                        'lastSeen': DateTime.now().toString(),
                       });
 
                       firstTimeSign ? navigatorReuse(context, const MainPage()) : null;
@@ -114,6 +116,7 @@ class Profile extends StatelessWidget {
                         'name': nameController.text,
                         'phone': phoneController.text,
                         'age': ageController.text,
+                        'lastSeen': DateTime.now().toString(),
                       });
                     },
                     child: Text(
