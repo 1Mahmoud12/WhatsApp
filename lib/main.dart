@@ -44,7 +44,7 @@ void main() async {
 
   String? id = await SharedPreference.getData('id');
   if (id != null) {
-    //Constants.idForMe = id;
+    Constants.idForMe = id;
   }
 
   Bloc.observer = MyBlocObserver();
