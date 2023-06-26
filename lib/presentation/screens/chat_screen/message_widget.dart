@@ -72,7 +72,7 @@ class MessagesWidget extends StatelessWidget {
                             },
                             child: Image.network(message.image)),
                       ),
-                    if (message.text != ' ')
+                    if (message.text != ' ' && message.text != '')
                       Padding(
                         padding: const EdgeInsets.all(16),
                         child: Text(message.text, maxLines: 5, style: AppStyles.style15.copyWith(color: HexColor(AppColors.boldColor))),

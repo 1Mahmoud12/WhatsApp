@@ -7,9 +7,9 @@ import 'package:permission_handler/permission_handler.dart';
 import '../utils/general_functions.dart';
 
 class Player extends StatefulWidget {
-  String filePath;
+  final String filePath;
 
-  Player({Key? key, required this.filePath}) : super(key: key);
+  const Player({Key? key, required this.filePath}) : super(key: key);
 
   @override
   State<Player> createState() => _PlayerState();
@@ -26,8 +26,7 @@ class _PlayerState extends State<Player> with SingleTickerProviderStateMixin {
   Future playRecorder() async {
     final status = await Permission.microphone.request();
     if (status != PermissionStatus.granted) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Center(child: Text('Please enable recording permission'))));
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Center(child: Text('Please enable recording permission'))));
     }
 
     assetsAudioPlayer.open(
@@ -41,8 +40,7 @@ class _PlayerState extends State<Player> with SingleTickerProviderStateMixin {
   Future initRecorder() async {
     final status = await Permission.microphone.request();
     if (status != PermissionStatus.granted) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Center(child: Text('Please enable recording permission'))));
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Center(child: Text('Please enable recording permission'))));
     }
 
     assetsAudioPlayer.open(
@@ -56,8 +54,7 @@ class _PlayerState extends State<Player> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    controllerPlayer = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 500));
+    controllerPlayer = AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
     initRecorder();
 
     assetsAudioPlayer.onReadyToPlay.listen((event) {
@@ -96,19 +93,14 @@ class _PlayerState extends State<Player> with SingleTickerProviderStateMixin {
                 ),
                 child: Text(
                   formatTime(fullAudio),
-                  style: TextStyle(
-                      fontSize: widthMedia * .04,
-                      color: Colors.white70,
-                      fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: widthMedia * .04, color: Colors.white70, fontWeight: FontWeight.bold),
                 ),
               ),
             ),
             Expanded(
               flex: 7,
               child: SliderTheme(
-                  data: const SliderThemeData(
-                      thumbShape: RoundSliderThumbShape(enabledThumbRadius: 7),
-                      secondaryActiveTrackColor: Colors.black),
+                  data: const SliderThemeData(thumbShape: RoundSliderThumbShape(enabledThumbRadius: 7), secondaryActiveTrackColor: Colors.black),
                   child: Slider(
                     activeColor: Colors.grey,
                     inactiveColor: Colors.white70,

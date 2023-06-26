@@ -50,7 +50,7 @@ class AllUsersScreen extends StatelessWidget {
                                 if (ChatRemoteDatsSource.users[indexOfUsers].phone == model[index].phones.first.number.replaceAll(' ', '')) {
                                   Navigator.of(context).push(createRoute(
                                       Chat(
-                                        modelUser: ChatRemoteDatsSource.users[indexOfUsers],
+                                        modelUser: ChatCubit.get(context).users[indexOfUsers],
                                         countInList: indexOfUsers,
                                       ),
                                       -1,
@@ -106,7 +106,6 @@ class AllUsersScreen extends StatelessWidget {
       ),
       body: BlocBuilder<ChatCubit, ChatState>(
         builder: (context, state) {
-          print("successMessages : ${ChatCubit.get(context).successMessages}");
           return ConditionalBuilder(
             condition: ChatCubit.get(context).successMessages == 2,
             builder: (context) {

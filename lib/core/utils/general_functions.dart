@@ -128,15 +128,7 @@ Widget indicator() {
   );
 }
 
-void keyboard(context) {
-  MediaQuery.of(context).viewInsets.bottom == 0
-      ? print(
-          'Keyboard is hidden',
-        )
-      : print('Keyboard is visible');
-}
-
-Widget animatedText({required String text}) {
+Widget animatedText({required String text, bool secondText = true}) {
   return Center(
       child: DefaultTextStyle(
     style: const TextStyle(
@@ -145,9 +137,11 @@ Widget animatedText({required String text}) {
     child: AnimatedTextKit(
       animatedTexts: [
         WavyAnimatedText(text),
-        WavyAnimatedText(
-          'Sorry Bro',
-        ),
+        secondText
+            ? WavyAnimatedText(
+                'Sorry Bro',
+              )
+            : WavyAnimatedText(''),
       ],
       isRepeatingAnimation: true,
       repeatForever: true,

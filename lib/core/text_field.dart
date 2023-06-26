@@ -1,5 +1,4 @@
 import 'package:chat_first/core/utils/constants.dart';
-import 'package:chat_first/core/utils/general_functions.dart';
 import 'package:chat_first/core/utils/styles.dart';
 import 'package:chat_first/presentation/screens/chat_screen/widget_send_message.dart';
 import 'package:flutter/material.dart';
@@ -59,7 +58,6 @@ class _TextFieldMessageState extends State<TextFieldMessage> {
               ))),
       style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 20, color: Colors.white),
       onSubmitted: (value) {
-        keyboard(context);
         if (value.isNotEmpty && value != " ") {
           ChatCubit.get(context)
               .addMessage(Message.fromJson({
@@ -78,7 +76,6 @@ class _TextFieldMessageState extends State<TextFieldMessage> {
         }
       },
       onChanged: (value) {
-        keyboard(context);
         if (value.length == 1 || value.isEmpty) {
           ChatCubit.get(context).changeBool(true);
         }

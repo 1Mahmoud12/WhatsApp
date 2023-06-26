@@ -115,9 +115,9 @@ class _ChatState extends State<Chat> with WidgetsBindingObserver {
       body: BlocConsumer<ChatCubit, ChatState>(listener: (context, state) {
         if (state is GetMessagesSuccessState) {
           Future.delayed(
-        const Duration(milliseconds: 100),
-        () => scroll.jumpTo(scroll.position.maxScrollExtent),
-      );
+            const Duration(milliseconds: 100),
+            () => scroll.jumpTo(scroll.position.maxScrollExtent),
+          );
         }
       }, builder: (context, state) {
         return WillPopScope(
@@ -133,12 +133,16 @@ class _ChatState extends State<Chat> with WidgetsBindingObserver {
                     ChatCubit.get(context).changeEmojiShow = ChatCubit.get(context).changeBool(true);
                     SendMessage.controller.clear();
                   },
-                  child: ListView(
-                    controller: scroll,
-                    children: ChatCubit.get(context).lastMessage[widget.modelUser.id]!.map((Message message) {
-                      return MessagesWidget(message: message);
-                    }).toList(),
-                  ),
+                  child: ChatCubit.get(context).lastMessage[widget.modelUser.id] == null
+                      ? Center(
+                          child: animatedText(text: 'Say hello'),
+                        )
+                      : ListView(
+                          controller: scroll,
+                          children: ChatCubit.get(context).lastMessage[widget.modelUser.id]!.map((Message message) {
+                            return MessagesWidget(message: message);
+                          }).toList(),
+                        ),
                 ),
               ),
               SendMessage(
