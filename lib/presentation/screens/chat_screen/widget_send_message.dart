@@ -98,6 +98,7 @@ class SendMessage extends StatelessWidget {
                               'audio': Constants.audio,
                               'dateTime': DateTime.now().toString(),
                               'createdAt': DateTime.now(),
+                              'read': false,
                             }).toMap())
                                 .whenComplete(() {
                               Future.delayed(
@@ -124,6 +125,7 @@ class SendMessage extends StatelessWidget {
                           'sendId': Constants.idForMe,
                           'receiveId': receiveId,
                           'text': controller.text,
+                          'read': false,
                           'dateTime': DateTime.now().toString(),
                           'createdAt': DateTime.now(),
                         }).toMap())

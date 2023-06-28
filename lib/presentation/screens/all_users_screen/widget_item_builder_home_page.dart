@@ -1,5 +1,6 @@
 import 'package:chat_first/core/utils/colors.dart';
 import 'package:chat_first/core/utils/styles.dart';
+import 'package:chat_first/data/data_source/remote_data_source.dart';
 import 'package:chat_first/domain/entities/model_message.dart';
 import 'package:chat_first/presentation/cubit/block.dart';
 import 'package:chat_first/presentation/cubit/states.dart';
@@ -89,15 +90,19 @@ class ItemBuilderHomePage extends StatelessWidget {
                             width: widthMedia * .6,
                             child: Text(
                               subTitle(message: ChatCubit.get(context).lastMessage[model.id]!.last),
-                              style: AppStyles.style15.copyWith(color: HexColor(AppColors.lightColor)),
+                              style: AppStyles.style15.copyWith(
+                                  color: ChatCubit.get(context).lastMessage[model.id]!.last.read
+                                      ? HexColor(AppColors.lightColor)
+                                      : HexColor(AppColors.boldColor)),
                               overflow: TextOverflow.ellipsis,
                             )),
                         const Spacer(),
-                        Icon(
-                          Icons.circle,
-                          color: HexColor('#007EF4'),
-                          size: 13,
-                        )
+                        if (!ChatCubit.get(context).lastMessage[model.id]!.last.read)
+                          Icon(
+                            Icons.circle,
+                            color: HexColor('#007EF4'),
+                            size: 13,
+                          )
                       ],
                     ),
                     Divider(
@@ -108,7 +113,11 @@ class ItemBuilderHomePage extends StatelessWidget {
                 ),
                 onTap: () {
                   ChatCubit.get(context).getMyData();
-
+                  ChatRemoteDatsSource().readingMessageChatsRemoteDataSource({
+                    'receiveId': ChatCubit.get(context).lastMessage[model.id]!.last.receiveId,
+                    'sendId': ChatCubit.get(context).lastMessage[model.id]!.last.sendId,
+                    'read': true,
+                  });
                   Navigator.of(context).push(createRoute(
                       Chat(
                         modelUser: model,

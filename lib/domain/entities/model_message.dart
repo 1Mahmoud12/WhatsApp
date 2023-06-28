@@ -4,6 +4,7 @@ class Message {
   final String receiveId;
   final String image;
   final String audio;
+  final bool read;
   final String dateTime;
   final DateTime createdAt;
 
@@ -13,6 +14,7 @@ class Message {
     required this.receiveId,
     required this.image,
     required this.audio,
+    required this.read,
     required this.dateTime,
     required this.createdAt,
   });
@@ -23,9 +25,19 @@ class Message {
         image: json['image'] ?? '',
         dateTime: json['dateTime'],
         audio: json['audio'] ?? '',
+        read: json['read'] ?? true,
         createdAt: DateTime.now(),
       );
   Map<String, dynamic> toMap() {
-    return {'sendId': sendId, 'text': text, 'receiveId': receiveId, 'image': image, 'audio': audio, 'dateTime': dateTime, 'createdAt': createdAt};
+    return {
+      'sendId': sendId,
+      'read': read,
+      'text': text,
+      'receiveId': receiveId,
+      'image': image,
+      'audio': audio,
+      'dateTime': dateTime,
+      'createdAt': createdAt
+    };
   }
 }

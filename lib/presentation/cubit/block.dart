@@ -103,6 +103,7 @@ class ChatCubit extends Cubit<ChatState> {
       'age': Constants.usersForMe!.age,
       'phone': Constants.usersForMe!.phone,
       'audio': value,
+      'read': false,
     });
   }
 
@@ -133,7 +134,6 @@ class ChatCubit extends Cubit<ChatState> {
     emit(GetAllUsersLoadingState());
     await getUsersUseCase.call().then((value) {
       emit(GetAllUsersSuccessState());
-      print("valueeeeee : $value");
       users = value;
       if (ChatRemoteDatsSource.users.isNotEmpty) {
         getLastMessage();

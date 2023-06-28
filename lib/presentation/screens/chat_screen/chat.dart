@@ -48,6 +48,7 @@ class _ChatState extends State<Chat> with WidgetsBindingObserver {
             'sendId': widget.modelUser.id,
             'receiveId': Constants.idForMe,
             'text': Constants.type,
+            'read': false,
             'dateTime': DateTime.now().toString(),
             'createdAt': DateTime.now(),
           }).toMap());

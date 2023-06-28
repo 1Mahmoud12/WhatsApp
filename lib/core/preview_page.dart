@@ -33,6 +33,7 @@ class PreviewPage extends StatelessWidget {
                 ChatCubit.get(context).addMessage(Message.fromJson({
                   'sendId': Constants.idForMe,
                   'receiveId': haveUser,
+                  'read': false,
                   'dateTime': DateTime.now().toString(),
                   'createdAt': DateTime.now(),
                 }).toMap());
@@ -78,6 +79,7 @@ class PreviewPage extends StatelessWidget {
                                       ChatCubit.get(context).addMessage(Message.fromJson({
                                         'sendId': Constants.idForMe,
                                         'receiveId': ChatRemoteDatsSource.users[index].id,
+                                        'read': false,
                                         "image": value,
                                         'dateTime': DateTime.now().toString(),
                                         'createdAt': DateTime.now(),

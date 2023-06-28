@@ -63,6 +63,7 @@ class _TextFieldMessageState extends State<TextFieldMessage> {
               .addMessage(Message.fromJson({
             'sendId': Constants.idForMe,
             'receiveId': widget.receiveId,
+            'read': false,
             'text': SendMessage.controller.text,
             'dateTime': DateTime.now().toString(),
             'createdAt': DateTime.now(),

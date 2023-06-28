@@ -12,7 +12,10 @@ abstract class ChatRemoteDatsSourceRepository {
   Future<List<Users>> getUserRemoteDataSource();
   Future<List<Calls>> getCalls();
   Future<void> addCalls(Map<String, dynamic> json);
+
   Future createMessageChatsRemoteDataSource(Map<String, dynamic> json);
+  Future<void> readingMessageChatsRemoteDataSource(Map<String, dynamic> json);
+
   Future<List<Message>> getChatsRemoteDataSource(String receiveId);
   Future<Message> lastMessageRemoteDataSource(String receiveId);
   void removeMessage(String receivedId);
@@ -53,7 +56,7 @@ class ChatRemoteDatsSource extends ChatRemoteDatsSourceRepository {
   }
 
   @override
-  Future createMessageChatsRemoteDataSource(Map<String, dynamic> json) async {
+  Future<void> createMessageChatsRemoteDataSource(Map<String, dynamic> json) async {
     await fireStoreUsers
         .doc(json['sendId'])
         .collection(Constants.collectionChats)
@@ -68,6 +71,36 @@ class ChatRemoteDatsSource extends ChatRemoteDatsSourceRepository {
           .collection(Constants.collectionMessages)
           .add(json);
       //getChatsRemoteDataSource(json['receiveId']);
+    }
+  }
+
+  @override
+  Future<void> readingMessageChatsRemoteDataSource(Map<String, dynamic> json) async {
+    if (json['text'] != Constants.type) {
+      await fireStoreUsers
+          .doc(Constants.idForMe)
+          .collection(Constants.collectionChats)
+          .doc(json['receiveId'] == Constants.idForMe ? json['sendId'] : json['receiveId'])
+          .collection(Constants.collectionMessages)
+          .get()
+          .then((value) {
+        for (var element in value.docs) {
+          fireStoreUsers
+              .doc(json['sendId'])
+              .collection(Constants.collectionChats)
+              .doc(json['receiveId'])
+              .collection(Constants.collectionMessages)
+              .doc(element.id)
+              .update(json);
+          fireStoreUsers
+              .doc(json['receiveId'])
+              .collection(Constants.collectionChats)
+              .doc(json['sendId'])
+              .collection(Constants.collectionMessages)
+              .doc(element.id)
+              .update(json);
+        }
+      });
     }
   }
 
