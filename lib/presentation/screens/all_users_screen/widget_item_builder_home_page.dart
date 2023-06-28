@@ -1,5 +1,6 @@
 import 'package:chat_first/core/utils/colors.dart';
 import 'package:chat_first/core/utils/styles.dart';
+import 'package:chat_first/domain/entities/model_message.dart';
 import 'package:chat_first/presentation/cubit/block.dart';
 import 'package:chat_first/presentation/cubit/states.dart';
 import 'package:flutter/material.dart';
@@ -26,34 +27,39 @@ class ItemBuilderHomePage extends StatelessWidget {
         return ChatCubit.get(context).lastMessage[model.id] != null
             ? ListTile(
                 dense: true,
-                leading: Stack(
-                  alignment: AlignmentDirectional.bottomEnd,
+                leading: Column(
                   children: [
-                    CircleAvatar(
-                      radius: widthMedia * .05,
-                      backgroundColor: Colors.black45,
-                      child: model.image != 'assets/img.png'
-                          ? Image.asset(
-                              'assets/person.png',
-                              width: widthMedia * .5,
-                              height: heightMedia * .5,
-                            )
-                          : Image(
-                              image: NetworkImage(
-                                Constants.modelOfLastMessage.last.text,
-                              ),
-                              width: widthMedia * .3,
-                              height: heightMedia * .3,
-                            ),
-                    ),
-                    CircleAvatar(
-                        radius: widthMedia * .015,
-                        backgroundColor: Colors.black,
-                        child: Icon(
-                          Icons.circle,
-                          color: HexColor('#0FDB66'),
-                          size: 15,
-                        ))
+                    Stack(
+                      alignment: AlignmentDirectional.bottomEnd,
+                      children: [
+                        CircleAvatar(
+                          radius: widthMedia * .05,
+                          backgroundColor: Colors.black45,
+                          child: model.image != 'assets/img.png'
+                              ? Image.asset(
+                                  'assets/person.png',
+                                  width: widthMedia * .5,
+                                  height: heightMedia * .5,
+                                )
+                              : Image(
+                                  image: NetworkImage(
+                                    Constants.modelOfLastMessage.last.text,
+                                  ),
+                                  width: widthMedia * .3,
+                                  height: heightMedia * .3,
+                                ),
+                        ),
+                        if (onlineOrNot(lastSeen: model.lastSeen))
+                          CircleAvatar(
+                              radius: widthMedia * .015,
+                              backgroundColor: Colors.black,
+                              child: Icon(
+                                Icons.circle,
+                                color: HexColor('#0FDB66'),
+                                size: 15,
+                              ))
+                      ],
+                    )
                   ],
                 ),
                 title: Row(
@@ -68,27 +74,35 @@ class ItemBuilderHomePage extends StatelessWidget {
                     const Spacer(),
                     Text(
                       ChatCubit.get(context).lastMessage[model.id] != null
-                          ? subStringForTime(time: ChatCubit.get(context).lastMessage[model.id]!.last.dateTime)
+                          ? subStringForDate(date: ChatCubit.get(context).lastMessage[model.id]!.last.dateTime)
                           : " ",
                       style: AppStyles.style15.copyWith(color: Colors.white),
                     ),
                   ],
                 ),
-                subtitle: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                subtitle: Column(
                   children: [
-                    SizedBox(
-                        width: widthMedia * .6,
-                        child: Text(
-                          ChatCubit.get(context).lastMessage[model.id] != null ? ChatCubit.get(context).lastMessage[model.id]!.last.text : "say 👋",
-                          style: AppStyles.style15.copyWith(color: HexColor(AppColors.lightColor)),
-                          overflow: TextOverflow.ellipsis,
-                        )),
-                    const Spacer(),
-                    Icon(
-                      Icons.circle,
-                      color: HexColor('#007EF4'),
-                      size: 13,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                            width: widthMedia * .6,
+                            child: Text(
+                              subTitle(message: ChatCubit.get(context).lastMessage[model.id]!.last),
+                              style: AppStyles.style15.copyWith(color: HexColor(AppColors.lightColor)),
+                              overflow: TextOverflow.ellipsis,
+                            )),
+                        const Spacer(),
+                        Icon(
+                          Icons.circle,
+                          color: HexColor('#007EF4'),
+                          size: 13,
+                        )
+                      ],
+                    ),
+                    Divider(
+                      thickness: 2,
+                      color: HexColor(AppColors.greyColor),
                     )
                   ],
                 ),
@@ -107,5 +121,28 @@ class ItemBuilderHomePage extends StatelessWidget {
             : Container();
       },
     );
+  }
+
+  bool onlineOrNot({required String lastSeen}) {
+    String today = DateTime.now().toString().substring(5, 10);
+
+    int lastSeenMinusHour = today == lastSeen.substring(5, 10) ? DateTime.parse(lastSeen).hour - 1 : -2;
+    int dateTimeMinusHour = DateTime.now().hour - 1;
+    if (lastSeenMinusHour == dateTimeMinusHour) {
+      return true;
+    }
+    return false;
+  }
+
+  String subTitle({required Message message}) {
+    if (message.text.isNotEmpty) {
+      return message.text;
+    } else if (message.image.isNotEmpty) {
+      return 'send image';
+    } else if (message.audio.isNotEmpty) {
+      return 'send audio';
+    } else {
+      return "say 👋";
+    }
   }
 }

@@ -60,8 +60,7 @@ class ChatRemoteDatsSource extends ChatRemoteDatsSourceRepository {
         .doc(json['receiveId'])
         .collection(Constants.collectionMessages)
         .add(json);
-    if (json['text'] != 'Typing0x') {
-      print(json['text']);
+    if (json['text'] != Constants.type) {
       await fireStoreUsers
           .doc(json['receiveId'])
           .collection(Constants.collectionChats)
@@ -138,9 +137,9 @@ class ChatRemoteDatsSource extends ChatRemoteDatsSourceRepository {
         .orderBy('createdAt')
         .get()
         .then((value) {
-      value.docs.forEach((element) {
-        if (element.data()['text'] == 'Typing0x') element.reference.delete();
-      });
+      for (var element in value.docs) {
+        if (element.data()['text'] == Constants.type) element.reference.delete();
+      }
     });
   }
 }

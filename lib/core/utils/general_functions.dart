@@ -28,7 +28,7 @@ String subStringForDate({required String date}) {
   }
 }
 
-/// from 20:00 to 08:00 pm
+/// Convert from 20:00 to 08:00 pm
 String subStringForTime({required String time}) {
   int checkAmOrPm = int.parse(time.substring(11, 13));
   if (checkAmOrPm > 12) {

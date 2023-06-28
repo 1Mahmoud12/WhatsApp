@@ -23,6 +23,7 @@ class Constants {
   /// get chats
   // static List<Message> getChats=[];
   static String audio = '';
+  static String type = 'Typing...';
 
   static Users? usersForMe;
   static List<Message> modelOfChats = [];

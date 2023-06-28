@@ -47,7 +47,7 @@ class _ChatState extends State<Chat> with WidgetsBindingObserver {
           ChatCubit.get(context).addMessage(Message.fromJson({
             'sendId': widget.modelUser.id,
             'receiveId': Constants.idForMe,
-            'text': 'Typing0x',
+            'text': Constants.type,
             'dateTime': DateTime.now().toString(),
             'createdAt': DateTime.now(),
           }).toMap());
