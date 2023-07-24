@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:hexcolor/hexcolor.dart';
 
 class AppColors {
-  // static var cardColor=Colors.indigo;
+  static Color mainColor = HexColor('#1F1F1F');
   static const cardColor = Color.fromRGBO(70, 110, 190, 100);
   static const yellowColor = '#F5AA00';
   static const blueColor = Color(0xff0c82df);

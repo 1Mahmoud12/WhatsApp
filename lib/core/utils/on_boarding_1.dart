@@ -1,16 +1,12 @@
 import 'package:chat_first/core/network/local.dart';
 import 'package:chat_first/core/utils/general_functions.dart';
-import 'package:chat_first/presentation/screens/main_page.dart';
+import 'package:chat_first/src/Features/Home/Pages/main_page.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-import 'package:url_launcher/url_launcher.dart';
-
-import 'constants.dart';
-
 class OnBoarding1 extends StatelessWidget {
   OnBoarding1({Key? key}) : super(key: key);
-  var dialogController = TextEditingController();
+  final dialogController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -39,26 +35,21 @@ class OnBoarding1 extends StatelessWidget {
               separator(widthMedia),
               heightBox(10),
               RichText(
-                  text: TextSpan(
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          fontSize: widthMedia * .05),
-                      children: [
-                    const TextSpan(
-                      text: ' -> create account from ',
-                    ),
-                    TextSpan(
-                        text: 'dashboard api',
-                        style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                            color: Colors.blue,
-                            decoration: TextDecoration.underline,
-                            fontSize: widthMedia * .05),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () async {
-                            //_launchUrl();
-                          }),
-                  ])),
+                  text: TextSpan(style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: widthMedia * .05), children: [
+                const TextSpan(
+                  text: ' -> create account from ',
+                ),
+                TextSpan(
+                    text: 'dashboard api',
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium!
+                        .copyWith(color: Colors.blue, decoration: TextDecoration.underline, fontSize: widthMedia * .05),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () async {
+                        //_launchUrl();
+                      }),
+              ])),
               heightBox(10),
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 const Text(
@@ -106,8 +97,7 @@ class OnBoarding1 extends StatelessWidget {
                     onPressed: dialogController.text.length != 32
                         ? null
                         : () {
-                            SharedPreference.putDataString(
-                                'api', dialogController.text);
+                            SharedPreference.putDataString('api', dialogController.text);
                             navigatorReuse(context, const MainPage());
                           },
                     child: const Text('go'))

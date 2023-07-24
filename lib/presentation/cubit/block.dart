@@ -7,7 +7,6 @@ import 'package:chat_first/domain/entities/model_user.dart';
 import 'package:chat_first/domain/use_case/add_call_use_call.dart';
 import 'package:chat_first/domain/use_case/remove_message.dart';
 import 'package:chat_first/presentation/cubit/states.dart';
-import 'package:chat_first/presentation/screens/call_screen/call_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
@@ -17,16 +16,15 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../domain/entities/model_calls.dart';
 import '../../domain/entities/model_message.dart';
-import '../../domain/use_case/add_user_use_case.dart';
 import '../../domain/use_case/create_chats.dart';
 import '../../domain/use_case/get_calls_use_case.dart';
 import '../../domain/use_case/get_chat.dart';
 import '../../domain/use_case/get_users_use_case.dart';
-import '../screens/all_users_screen/howe_page_screen.dart';
-import '../screens/profile_screen/profile.dart';
+import '../../src/Features/MainChatPage/Pages/howe_page_screen.dart';
+import '../../src/Features/call_screen/Pages/call_screen.dart';
+import '../../src/Features/profile_screen/Pages/profile.dart';
 
 class ChatCubit extends Cubit<ChatState> {
-  final AddUsersUseCase addUsersUseCase;
   final GetUsersUseCase getUsersUseCase;
   final CreateMessagesUseCase createMessageUseCase;
   final GetChatsUseCase getChatsUseCase;
@@ -34,12 +32,11 @@ class ChatCubit extends Cubit<ChatState> {
   final AddCallsUseCase addCallsUseCase;
   final RemoveMessageUseCase removeMessageUseCase;
   final GetLastMessageUseCase getLastMessageUseCase;
-  ChatCubit(this.addUsersUseCase, this.getUsersUseCase, this.createMessageUseCase, this.getChatsUseCase, this.getLastMessageUseCase,
-      this.getCallsUseCase, this.addCallsUseCase, this.removeMessageUseCase)
+  ChatCubit(this.getUsersUseCase, this.createMessageUseCase, this.getChatsUseCase, this.getLastMessageUseCase, this.getCallsUseCase,
+      this.addCallsUseCase, this.removeMessageUseCase)
       : super(InitialState());
 
   static ChatCubit get(context) => BlocProvider.of(context);
-
   int currentState = 2;
 
   List<Widget> screens = [
@@ -82,13 +79,13 @@ class ChatCubit extends Cubit<ChatState> {
       p0.ref.getDownloadURL().then((value) {
         emit(GetImageSuccessState());
 
-        addUser({
+        /*addUser({
           'id': Constants.usersForMe!.id,
           'name': Constants.usersForMe!.name,
           'age': Constants.usersForMe!.age,
           'phone': Constants.usersForMe!.phone,
           'image': value,
-        });
+        });*/
       });
     });
 
@@ -107,9 +104,9 @@ class ChatCubit extends Cubit<ChatState> {
     });
   }
 
-  Future addUser(Map<String, dynamic> json) async {
+/*  Future addUser(Map<String, dynamic> json) async {
     addUsersUseCase.call(Users.fromJson(json).toMap());
-  }
+  }*/
 
   Future getMyData() async {
     FirebaseFirestore.instance.collection(Constants.collectionUser).doc(Constants.idForMe).get().then((value) {
@@ -152,7 +149,7 @@ class ChatCubit extends Cubit<ChatState> {
     });
   }
 
-  /// success =1 for loading , 2 for success , 0 for no matches and 10 for error
+  /// [successMessages] =1 for loading , 2 for success , 0 for no messages and 10 for error
   int successMessages = 0;
   Map<String, List<Message>?> lastMessage = {};
   List<String> storeMessages = [];
@@ -182,7 +179,6 @@ class ChatCubit extends Cubit<ChatState> {
     }
 
     SharedPreference.putDataStringListModel('messages', storeMessages);
-
     needScroll = true;
   }
 

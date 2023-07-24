@@ -2,9 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:chat_first/core/utils/general_functions.dart';
-import 'package:chat_first/presentation/cubit/block.dart';
-import 'package:chat_first/presentation/screens/call_screen/accept_end.dart';
-import 'package:chat_first/presentation/screens/call_screen/call_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +10,9 @@ import 'package:http/http.dart' as http;
 
 import '../../domain/entities/model_calls.dart';
 import '../../domain/entities/model_user.dart';
+import '../../src/Features/call_screen/Pages/accept_end.dart';
+import '../../src/Features/call_screen/Pages/call_screen.dart';
+import '../../src/Features/sign_in/Pages/bloc/sign_cubit.dart';
 import '../utils/constants.dart';
 
 class Messaging {
@@ -30,7 +30,7 @@ class Messaging {
       if (value != null) {
         Constants.tokenMessaging = value;
 
-        ChatCubit.get(context).addUser({
+        SignCubit.get(context).addUser({
           'tokenMessaging': value,
         });
       }
@@ -38,7 +38,7 @@ class Messaging {
 
     messaging.onTokenRefresh.listen((event) {
       Constants.tokenMessaging = event;
-      ChatCubit.get(context).addUser({
+      SignCubit.get(context).addUser({
         'tokenMessaging': Constants.tokenMessaging,
       });
     });

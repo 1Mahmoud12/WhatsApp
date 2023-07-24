@@ -11,11 +11,6 @@ class ChatRepository implements ChatRepositoryDomain {
   ChatRepository(this.chatRemoteDatsSourceRepository);
 
   @override
-  void addUsersDomain(Map<String, dynamic> json) {
-    chatRemoteDatsSourceRepository.addUserRemoteDataSource(json);
-  }
-
-  @override
   Future<List<Users>> getUsers() async {
     return await chatRemoteDatsSourceRepository.getUserRemoteDataSource();
   }

@@ -5,7 +5,7 @@ import 'package:chat_first/core/preview_page.dart';
 import 'package:chat_first/core/utils/colors.dart';
 import 'package:chat_first/core/utils/general_functions.dart';
 import 'package:chat_first/core/utils/styles.dart';
-import 'package:chat_first/presentation/screens/main_page.dart';
+import 'package:chat_first/src/Features/Home/Pages/main_page.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';

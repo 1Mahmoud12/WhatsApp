@@ -1,4 +1,6 @@
-class Message {
+import 'package:equatable/equatable.dart';
+
+class Message extends Equatable {
   final String sendId;
   final String text;
   final String receiveId;
@@ -40,4 +42,8 @@ class Message {
       'createdAt': createdAt
     };
   }
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => [sendId, receiveId, text, image, audio, read, createdAt, dateTime];
 }

@@ -1,7 +1,7 @@
 import 'package:chat_first/core/go_router.dart';
 import 'package:chat_first/core/network/local.dart';
 import 'package:chat_first/presentation/cubit/block.dart';
-import 'package:chat_first/presentation/screens/sign_in/sign_cubit.dart';
+import 'package:chat_first/src/Features/sign_in/Pages/bloc/sign_cubit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -44,7 +44,7 @@ void main() async {
 
   String? id = await SharedPreference.getData('id');
   if (id != null) {
-    Constants.idForMe = id;
+    Constants.idForMe = null;
   }
 
   Bloc.observer = MyBlocObserver();
@@ -61,7 +61,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => ChatCubit(seGet(), seGet(), seGet(), seGet(), seGet(), seGet(), seGet(), seGet())..getAllUsers()),
+        BlocProvider(create: (context) => ChatCubit(seGet(), seGet(), seGet(), seGet(), seGet(), seGet(), seGet())..getAllUsers()),
         BlocProvider(
             create: (context) => SignCubit(
                   seGet(),

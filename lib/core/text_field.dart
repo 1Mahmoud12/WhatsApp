@@ -1,11 +1,11 @@
 import 'package:chat_first/core/utils/constants.dart';
 import 'package:chat_first/core/utils/styles.dart';
-import 'package:chat_first/presentation/screens/chat_screen/widget_send_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../domain/entities/model_message.dart';
 import '../presentation/cubit/block.dart';
+import '../src/Features/chat_screen/Pages/widget_send_message.dart';
 
 class TextFieldMessage extends StatefulWidget {
   final String receiveId;

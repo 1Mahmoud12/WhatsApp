@@ -1,4 +1,3 @@
-import 'package:chat_first/core/network/local.dart';
 import 'package:chat_first/core/utils/constants.dart';
 import 'package:chat_first/core/utils/general_functions.dart';
 import 'package:chat_first/domain/entities/model_calls.dart';
@@ -8,7 +7,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../domain/entities/model_message.dart';
 
 abstract class ChatRemoteDatsSourceRepository {
-  void addUserRemoteDataSource(Map<String, dynamic> json);
   Future<List<Users>> getUserRemoteDataSource();
   Future<List<Calls>> getCalls();
   Future<void> addCalls(Map<String, dynamic> json);
@@ -23,17 +21,6 @@ abstract class ChatRemoteDatsSourceRepository {
 
 class ChatRemoteDatsSource extends ChatRemoteDatsSourceRepository {
   final fireStoreUsers = FirebaseFirestore.instance.collection('users');
-  @override
-  Future<void> addUserRemoteDataSource(Map<String, dynamic> json) async {
-    if (Constants.idForMe == null) {
-      await fireStoreUsers.doc(json['id']).set(json).then((value) {
-        Constants.idForMe = json['id'];
-        SharedPreference.putDataString('id', json['id']);
-      });
-    } else {
-      await fireStoreUsers.doc(Constants.idForMe).update(json);
-    }
-  }
 
   static int lengthUsers = 0;
   static List<Users> users = [];
