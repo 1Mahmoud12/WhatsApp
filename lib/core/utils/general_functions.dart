@@ -1,9 +1,11 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:chat_first/core/utils/styles.dart';
 import 'package:chat_first/domain/entities/model_user.dart';
 import 'package:chat_first/presentation/cubit/block.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -35,6 +37,13 @@ String subStringForTime({required String time}) {
     return '${(checkAmOrPm - 12)}${time.substring(13, 16)} Pm';
   } else {
     return '${(checkAmOrPm)}${time.substring(13, 16)} am';
+  }
+}
+
+/// TODO : just print in debugMode
+void printDM(String title, {bool stop = false}) {
+  if (kDebugMode) {
+    stop ? null : log(title);
   }
 }
 

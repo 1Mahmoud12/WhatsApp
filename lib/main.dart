@@ -44,7 +44,7 @@ void main() async {
 
   String? id = await SharedPreference.getData('id');
   if (id != null) {
-    Constants.idForMe = null;
+    Constants.idForMe = id;
   }
 
   Bloc.observer = MyBlocObserver();
@@ -62,10 +62,7 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => ChatCubit(seGet(), seGet(), seGet(), seGet(), seGet(), seGet(), seGet())..getAllUsers()),
-        BlocProvider(
-            create: (context) => SignCubit(
-                  seGet(),
-                )),
+        BlocProvider(create: (context) => SignCubit(seGet())),
       ],
       child: BlocBuilder<ChatCubit, ChatState>(
         builder: (context, state) => MaterialApp.router(

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:camera/camera.dart';
 import 'package:chat_first/presentation/cubit/states.dart';
 import 'package:chat_first/src/Features/sign_in/Pages/bloc/sign_cubit.dart';
+import 'package:chat_first/src/Features/sign_in/Pages/bloc/sign_event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -31,7 +32,8 @@ class MainPage extends StatelessWidget {
         if (!ChatCubit.get(context).createTokenMessaging) {
           Messaging().start(context);
 
-          Timer.periodic(const Duration(minutes: 1), (timer) => SignCubit.get(context).addUser({'lastSeen': DateTime.now().toString()}));
+          Timer.periodic(
+              const Duration(minutes: 1), (timer) => BlocProvider.of<SignCubit>(context).add(SignEvent({'lastSeen': DateTime.now().toString()})));
           ChatCubit.get(context).createTokenMessaging = ChatCubit.get(context).changeBool(false);
         }
         if (Constants.newMessageOnBackground) {

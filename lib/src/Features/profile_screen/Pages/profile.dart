@@ -6,6 +6,7 @@ import 'package:chat_first/domain/entities/model_user.dart';
 import 'package:chat_first/presentation/cubit/block.dart';
 import 'package:chat_first/presentation/cubit/states.dart';
 import 'package:chat_first/src/Features/Home/Pages/main_page.dart';
+import 'package:chat_first/src/Features/sign_in/Pages/bloc/sign_event.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -19,12 +20,12 @@ import '../../sign_in/Pages/bloc/sign_cubit.dart';
 class Profile extends StatelessWidget {
   final bool firstTimeSign;
 
-  Profile({key, required this.firstTimeSign}) : super(key: key);
+  const Profile({key, required this.firstTimeSign}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     double widthMedia = MediaQuery.of(context).size.width;
     double heightMedia = MediaQuery.of(context).size.height;
-    TextEditingController nameController = TextEditingController(text: Constants.idForMe != null ? Constants.usersForMe!.name : 'new value');
+    TextEditingController nameController = TextEditingController(text: Constants.idForMe != null ? Constants.usersForMe!.name : '');
     TextEditingController ageController = TextEditingController(
         text: Constants.usersForMe != null && Constants.usersForMe!.name.toString() != "null" ? Constants.usersForMe!.age.toString() : '');
 
@@ -36,7 +37,7 @@ class Profile extends StatelessWidget {
           TextButton(
             onPressed: () async {
               FirebaseAuth.instance.signOut();
-              FirebaseAuth.instance.currentUser!.delete().then((value) => print("Successful"));
+              FirebaseAuth.instance.currentUser!.delete().then((value) => printDM("Successful"));
               FirebaseFirestore.instance.collection('users').doc(Constants.usersForMe!.id).delete();
               //Constants.usersForMe!.id = null;
               Users.fromJson({'id': null});
@@ -111,13 +112,13 @@ class Profile extends StatelessWidget {
                       });
 
                       firstTimeSign ? navigatorReuse(context, const MainPage()) : null;
-                      return await SignCubit.get(context).addUser({
+                      BlocProvider.of<SignCubit>(context).add(SignEvent({
                         'id': Constants.usersForMe!.id,
                         'name': nameController.text,
                         'phone': phoneController.text,
                         'age': ageController.text,
                         'lastSeen': DateTime.now().toString(),
-                      });
+                      }));
                     },
                     child: Text(
                       firstTimeSign ? 'Sign' : 'Update',

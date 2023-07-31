@@ -5,6 +5,7 @@ import 'package:chat_first/core/utils/general_functions.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
 
@@ -13,6 +14,7 @@ import '../../domain/entities/model_user.dart';
 import '../../src/Features/call_screen/Pages/accept_end.dart';
 import '../../src/Features/call_screen/Pages/call_screen.dart';
 import '../../src/Features/sign_in/Pages/bloc/sign_cubit.dart';
+import '../../src/Features/sign_in/Pages/bloc/sign_event.dart';
 import '../utils/constants.dart';
 
 class Messaging {
@@ -30,17 +32,17 @@ class Messaging {
       if (value != null) {
         Constants.tokenMessaging = value;
 
-        SignCubit.get(context).addUser({
+        BlocProvider.of<SignCubit>(context).add(SignEvent({
           'tokenMessaging': value,
-        });
+        }));
       }
     });
 
     messaging.onTokenRefresh.listen((event) {
       Constants.tokenMessaging = event;
-      SignCubit.get(context).addUser({
+      BlocProvider.of<SignCubit>(context).add(SignEvent({
         'tokenMessaging': Constants.tokenMessaging,
-      });
+      }));
     });
 
     requestPermission();

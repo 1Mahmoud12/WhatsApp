@@ -1,11 +1,14 @@
+import 'package:another_flushbar/flushbar.dart';
 import 'package:chat_first/core/network/local.dart';
 import 'package:chat_first/core/utils/colors.dart';
 import 'package:chat_first/core/utils/general_functions.dart';
 import 'package:chat_first/core/utils/styles.dart';
 import 'package:chat_first/src/Features/sign_in/Pages/bloc/sign_cubit.dart';
+import 'package:chat_first/src/Features/sign_in/Pages/bloc/sign_event.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
 
 import '../../../../../core/utils/constants.dart';
@@ -48,9 +51,13 @@ class SignIn extends StatelessWidget {
                           phoneNumber: "+2${phoneController.text}",
                           timeout: const Duration(minutes: 2),
                           verificationFailed: (FirebaseAuthException e) {
-                            if (e.code == 'invalid-phone-number') {
-                              print('The provided phone number is not valid.');
-                            }
+                            print('${e.code}');
+                            Flushbar(
+                              message: e.code,
+                              padding: EdgeInsets.all(20),
+                              backgroundColor: Colors.green,
+                              duration: Duration(seconds: 1),
+                            ).show(context);
                           },
                           codeSent: (String verificationId, int? resendToken) async {
                             print(phoneController.text);
@@ -84,7 +91,7 @@ class SignIn extends StatelessWidget {
                                                         Users.fromJson({'id': value.user!.uid, 'phone': phoneController.text, 'name': 'new value'});
 
                                                     Constants.tokenMessaging = await FirebaseMessaging.instance.getToken() ?? '';
-                                                    SignCubit.get(context).addUser({
+                                                    BlocProvider.of<SignCubit>(context).addUser({
                                                       'id': value.user!.uid,
                                                       'phone': phoneController.text,
                                                       'lastSeen': DateTime.now().toString(),
@@ -104,8 +111,12 @@ class SignIn extends StatelessWidget {
                               Constants.usersForMe = Users.fromJson({'id': value.user!.uid, 'phone': phoneController.text, 'name': 'new value'});
 
                               Constants.tokenMessaging = await FirebaseMessaging.instance.getToken() ?? '';
-                              SignCubit.get(context).addUser(
-                                  {'id': value.user!.uid, 'phone': phoneController.text, 'lastSeen': DateTime.now().toString(), 'name': 'new value'});
+                              BlocProvider.of<SignCubit>(context).add(SignEvent({
+                                'id': value.user!.uid,
+                                'phone': phoneController.text,
+                                'lastSeen': DateTime.now().toString(),
+                                'name': 'new value'
+                              }));
                               Navigator.of(context).pushReplacement(createRoute(Profile(firstTimeSign: true), -1, 1));
                             });
                           },
